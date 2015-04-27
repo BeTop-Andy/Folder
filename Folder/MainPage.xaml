@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="HuaweiSoftware.Folder.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk"
+    mc:Ignorable="d"
+    d:DesignHeight="600" d:DesignWidth="800">
+
+    <Grid x:Name="LayoutRoot" Background="White">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <TextBox x:Name="txt_Path" Height="23" Margin="75,10,170,0" VerticalAlignment="Top" Grid.ColumnSpan="3" KeyDown="txt_Path_KeyDown"/>
+        <Button x:Name="btn_Save" Content="浏览" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="75" Height="23" Grid.Column="2" Click="btn_Save_Click"/>
+        <ListBox x:Name="lst_Folder" Margin="10,75,10,10" SelectionChanged="lst_Folder_SelectionChanged"/>
+        <ListBox x:Name="lst_File" Grid.Column="1" Margin="10,75,10,10" Grid.ColumnSpan="2"/>
+        <sdk:Label Content=" &quot;.&quot; 表示本目录;&#x0d;有多少个 &quot;/&quot; 表示多少级子目录,没有则表示本目录下的文件夹" Height="32" Margin="10,38,10,0" VerticalAlignment="Top" BorderBrush="Black"/>
+        <ComboBox x:Name="ddlst_Extension" Grid.Column="1" Margin="65,50,10,0" VerticalAlignment="Top" SelectionChanged="ddlst_Extension_SelectionChanged" Height="20" IsEnabled="False"/>
+        <sdk:Label Content="选择后缀" Grid.Column="1" HorizontalAlignment="Left" Margin="10,54,0,0" VerticalAlignment="Top" Width="55" Height="16"/>
+        <TextBox x:Name="txt_Search" Grid.Column="2" Height="23" Margin="10,47,90,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" KeyDown="txt_Search_KeyDown" TextChanged="txt_Search_TextChanged" IsEnabled="False"/>
+        <Button x:Name="btn_Search" Content="搜索" Grid.Column="2" Margin="0,47,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Height="22" Click="btn_Search_Click" IsEnabled="False"/>
+        <Button x:Name="btn_Load" Content="加载" Grid.Column="2" HorizontalAlignment="Right" Margin="0,10,90,0" VerticalAlignment="Top" Width="75" Click="btn_Load_Click"/>
+        <Border BorderThickness="1" HorizontalAlignment="Left" Height="22" Margin="10,10,0,0" VerticalAlignment="Top" Width="60">
+            <sdk:Label Content="请输入路径"/>
+        </Border>
+    </Grid>
+</UserControl>
