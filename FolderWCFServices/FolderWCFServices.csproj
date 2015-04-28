@@ -72,6 +72,8 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DirInfoWithID.cs" />
+    <Compile Include="FileInfoWithID.cs" />
     <Compile Include="FolderWCF.svc.cs">
       <DependentUpon>FolderWCF.svc</DependentUpon>
     </Compile>

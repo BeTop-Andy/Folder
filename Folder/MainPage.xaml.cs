@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-
 using HuaweiSoftware.Folder.FolderWCFReference;
 
 
@@ -13,10 +13,9 @@ namespace HuaweiSoftware.Folder
 	public partial class MainPage : UserControl
 	{
 		ObservableCollection<PrefixFolder> folders;		// 文件夹的相关信息
-		FolderWCFClient webClient;						// 调用数据库的“引用”
 		ObservableCollection<string> extensions;		// 后缀名的集合
 
-		int id = 1;										// 数据库中的Id
+		DataBaseOperator dbOp;							// 操作数据库的对象
 
 		public MainPage()
 		{
@@ -24,8 +23,8 @@ namespace HuaweiSoftware.Folder
 			folders = new ObservableCollection<PrefixFolder>();
 			lst_Folder.ItemsSource = folders;
 
-			webClient = new FolderWCFClient();
-			
+			dbOp = new DataBaseOperator();
+
 			extensions = new ObservableCollection<string>();
 			ddlst_Extension.ItemsSource = extensions;
 			extensions.Add("ALL");
@@ -43,16 +42,19 @@ namespace HuaweiSoftware.Folder
 				folders.Add(new PrefixFolder(".", dir));
 
 				GetAllDir(dir, 0);
-				AddFileToDB(dir, null);
-				AddDirToDB(dir, null);
+				dbOp.AddFileToDB(dir, null);
+				dbOp.AddDirToDB(dir, null);
 
-				id++;		// 为了分隔开
+				DataBaseOperator.Id++;		// 为了分隔开
 
 				SetEnabled(true);
+
+				//MessageBox.Show("保存成功");
 			}
-			catch
+			catch (Exception ex)
 			{
-				MessageBox.Show("输入路径有误，请重新输入");
+				MessageBox.Show(ex.Message);
+
 				txt_Path.Text = "";
 				txt_Path.Focus();
 				SetEnabled(false);
@@ -89,44 +91,6 @@ namespace HuaweiSoftware.Folder
 			}
 		}
 
-		/// <summary>
-		/// 获取dir目录下的所有子目录，并加入数据库
-		/// </summary>
-		/// <param name="dir">“根”目录</param>
-		/// <param name="pid">父节点的Id</param>
-		private void AddDirToDB(DirectoryInfo dir, int? pid)
-		{
-			IEnumerable<DirectoryInfo> dirs = dir.EnumerateDirectories();
-
-			foreach (DirectoryInfo di in dirs)
-			{
-				webClient.AddFileToDBAsync(id, pid, di.Name, GetDirSize(di), "dir",
-										   di.CreationTime);
-
-				int tmp_id = id;
-				id++;
-
-				AddFileToDB(di, tmp_id);
-				AddDirToDB(di, tmp_id);
-			}
-		}
-
-		/// <summary>
-		/// 获取dir目录下的所有文件，并加入数据库
-		/// </summary>
-		/// <param name="dir">“根”目录</param>
-		/// <param name="pid">父节点的Id</param>
-		private void AddFileToDB(DirectoryInfo dir, int? pid)
-		{
-			IEnumerable<FileInfo> files = dir.EnumerateFiles();
-
-			foreach (FileInfo fi in files)
-			{
-				webClient.AddFileToDBAsync(id, pid, fi.Name, fi.Length, fi.Extension,
-										   fi.CreationTime);
-				id++;
-			}
-		}
 
 
 		private void lst_Folder_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -151,30 +115,6 @@ namespace HuaweiSoftware.Folder
 					}
 				}
 			}
-		}
-
-		/// <summary>
-		/// 计算dir目录下（包括子目录）的所有文件的总大小
-		/// </summary>
-		/// <param name="dir"></param>
-		/// <returns>大小</returns>
-		private long GetDirSize(DirectoryInfo dir)
-		{
-			long size = 0;
-
-			IEnumerable<FileInfo> files = dir.EnumerateFiles();
-			foreach (var file in files)
-			{
-				size += file.Length;
-			}
-
-			IEnumerable<DirectoryInfo> dirs = dir.EnumerateDirectories();
-			foreach (var di in dirs)
-			{
-				size += GetDirSize(di);
-			}
-
-			return size;
 		}
 
 		private void ddlst_Extension_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -256,10 +196,8 @@ namespace HuaweiSoftware.Folder
 				try
 				{
 					DirectoryInfo dir = new DirectoryInfo(pathStr);
-					
-					txt_Path.Text = dir.FullName;
 
-					MessageBox.Show(dir.FullName);
+					txt_Path.Text = dir.FullName;
 
 					folders.Clear();
 					folders.Add(new PrefixFolder(".", dir));
@@ -281,9 +219,10 @@ namespace HuaweiSoftware.Folder
 
 					SetEnabled(true);
 				}
-				catch
+				catch (Exception ex)
 				{
-					MessageBox.Show("输入路径有误，请重新输入");
+					MessageBox.Show(ex.Message);
+
 					txt_Path.Text = "";
 					txt_Path.Focus();
 					SetEnabled(false);
@@ -294,7 +233,27 @@ namespace HuaweiSoftware.Folder
 
 		private void btn_Load_Click(object sender, RoutedEventArgs e)
 		{
-			
+			if (dbOp.DirList.Count != 0)
+			{
+				lst_Folder.ItemsSource = dbOp.DirList;
+			}
+			else
+			{
+				try
+				{
+					string path = txt_Path.Text;
+					if (!Directory.Exists(path))
+					{
+						throw new Exception("目录不存在");
+					}
+
+					dbOp.GetDirFromDB(path);
+				}
+				catch (Exception ex)
+				{
+					MessageBox.Show(ex.Message);
+				}
+			}
 		}
 	}
 }

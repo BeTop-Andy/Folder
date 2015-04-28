@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
+using System.Data.SqlClient;
 
 namespace HuaweiSoftware.Folder
 {
@@ -12,6 +13,21 @@ namespace HuaweiSoftware.Folder
 	public interface IFolderWCF
 	{
 		[OperationContract]
-		void AddFileToDB(int id, int? pid, string fileName, long size, string ext, DateTime createTime);
+		void AddFileToDB(string fileStr);
+
+		[OperationContract]
+		void AddDirToDB(string dirStr);
+
+		[OperationContract]
+		bool Exists(string path, string name);
+
+		[OperationContract]
+		int GetId();
+
+		[OperationContract]
+		List<string> GetFileFromDB(string path);
+
+		[OperationContract]
+		string GetDirFromDB(string path);
 	}
 }
