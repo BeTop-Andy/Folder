@@ -26,7 +26,6 @@
     <MetadataFile FileName="FolderWCF.xsd" MetadataType="Schema" ID="1bcd9231-a071-492e-a49e-65341c5d6835" SourceId="1" SourceUrl="http://localhost:61020/FolderWCF.svc?xsd=xsd0" />
     <MetadataFile FileName="FolderWCF.wsdl" MetadataType="Wsdl" ID="f154d78d-9869-4070-8a9d-5f2627d8c63d" SourceId="1" SourceUrl="http://localhost:61020/FolderWCF.svc?wsdl" />
     <MetadataFile FileName="FolderWCF.disco" MetadataType="Disco" ID="0beac862-3cd1-4b7e-8cf1-36e5faeab1f1" SourceId="1" SourceUrl="http://localhost:61020/FolderWCF.svc?disco" />
-    <MetadataFile FileName="FolderWCF2.xsd" MetadataType="Schema" ID="0e30264f-b424-4423-9c61-8c4e0eb2fa6a" SourceId="1" SourceUrl="http://localhost:61020/FolderWCF.svc?xsd=xsd2" />
     <MetadataFile FileName="FolderWCF1.xsd" MetadataType="Schema" ID="36d215ac-a0d8-4e5a-8048-76fdb3d9b926" SourceId="1" SourceUrl="http://localhost:61020/FolderWCF.svc?xsd=xsd1" />
   </Metadata>
   <Extensions>

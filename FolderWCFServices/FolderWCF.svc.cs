@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.ServiceModel;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 
@@ -28,7 +23,7 @@ namespace HuaweiSoftware.Folder
 			string pid = temp[1];
 			FileInfo file = new FileInfo(temp[2]);
 
-			SqlCommand sqlComm = new SqlCommand(string.Format(@"INSERT INTO FileTable([Id],[PID],[Name],[Size],[Type],[CreateTime],[Path])VALUES({0},{1},'{2}',{3},'{4}','{5}','{6}')", id, pid, file.Name, file.Length, file.Extension, file.CreationTime.ToString("yyyy-MM-dd HH:mm:ss"), file.DirectoryName), sqlConn);
+			SqlCommand sqlComm = new SqlCommand(string.Format(@"INSERT INTO FileTable([Id],[PID],[Name],[Size],[Type],[CreateTime],[Path])VALUES({0},{1},'{2}',{3},'{4}','{5}','{6}')", id, pid, file.Name, file.Length, file.Extension, file.CreationTime.ToString("yyyy-MM-dd HH:mm:ss"), file.DirectoryName.Replace('\\', '/')), sqlConn);
 
 			sqlComm.ExecuteNonQuery();
 		}
@@ -49,7 +44,7 @@ namespace HuaweiSoftware.Folder
 
 			long size = GetDirSize(dir);
 
-			SqlCommand sqlComm = new SqlCommand(string.Format(@"INSERT INTO FileTable([Id],[PID],[Name],[Size],[Type],[CreateTime],[Path])VALUES({0},{1},'{2}',{3},'{4}','{5}','{6}')", id, pid, dir.Name, size, "dir", dir.CreationTime.ToString("yyyy-MM-dd HH:mm:ss"), dir.Parent.FullName), sqlConn);
+			SqlCommand sqlComm = new SqlCommand(string.Format(@"INSERT INTO FileTable([Id],[PID],[Name],[Size],[Type],[CreateTime],[Path])VALUES({0},{1},'{2}',{3},'{4}','{5}','{6}')", id, pid, dir.Name, size, "dir", dir.CreationTime.ToString("yyyy-MM-dd HH:mm:ss"), dir.Parent.FullName.Replace('\\', '/')), sqlConn);
 
 			sqlComm.ExecuteNonQuery();
 
@@ -117,30 +112,32 @@ namespace HuaweiSoftware.Folder
 			return id;
 		}
 
-		public List<string> GetFileFromDB(string path)
+		public string GetFileFromDB(int? PID)
 		{
 			sqlConn.Open();
 
-			if (path.EndsWith(@"\"))
+			string sqlCommandString;
+
+			if (PID.HasValue)
 			{
-				path = path.Substring(0, path.Length - 1);
+				sqlCommandString = string.Format("SELECT * FROM FileTable WHERE [PID] = {0} AND [Type] like '.%'", PID);
+			}
+			else
+			{
+				sqlCommandString = string.Format("SELECT * FROM FileTable WHERE [PID] IS NULL AND [Type] like '.%'", PID);
 			}
 
-			SqlCommand sqlComm = new SqlCommand(string.Format("SELECT * FROM FileTable WHERE [Path] LIKE '{0}%' AND [Type] <> 'dir' ORDER BY [Id]", path), sqlConn);
+			SqlCommand sqlComm = new SqlCommand(sqlCommandString, sqlConn);
 			SqlDataReader dr = sqlComm.ExecuteReader();
 
-			List<string> fileList = new List<string>();
+			string fileList = "";
 
-			int id;
-			int? pid;
-			string fullName;
+			string fileName;
 			while (dr.Read())
 			{
-				id = dr.GetInt32(1);
-				pid = dr.GetInt32(2);
-				fullName = dr.GetString(7) + @"\" + dr.GetString(3);
+				fileName = dr.GetString(3);
 
-				fileList.Add(string.Format("{0}|{1}|{2}", id, pid, fullName));
+				fileList += fileName + "*";
 			}
 
 			dr.Close();
@@ -152,25 +149,27 @@ namespace HuaweiSoftware.Folder
 		{
 			sqlConn.Open();
 
-			if (path.EndsWith(@"\"))
+			if (path.EndsWith("/"))
 			{
 				path = path.Substring(0, path.Length - 1);
 			}
 
-			SqlCommand sqlComm = new SqlCommand(string.Format("SELECT * FROM FileTable WHERE [Path] LIKE '{0}%' AND [Type] = 'dir' ORDER BY [Id]", path), sqlConn);
+			SqlCommand sqlComm = new SqlCommand(string.Format("SELECT * FROM FileTable WHERE [Path] LIKE '{0}%' AND [Type] = 'dir'", path), sqlConn);
 			SqlDataReader dr = sqlComm.ExecuteReader();
-
+			
 			string dirList = "";
 
 			int id;
-			int? pid;
+			string pid;
 			string fullName;
 			while (dr.Read())
 			{
 				id = dr.GetInt32(1);
-				pid = dr.GetInt32(2);
-				fullName = dr.GetString(7) + @"\" + dr.GetString(3);
+				pid = dr.IsDBNull(2) ? "NULL" : dr.GetInt32(2).ToString();
+				fullName = dr.GetString(7) + "/" + dr.GetString(3);
 
+				// 用“|”分隔元素
+				// 用“*”分隔行
 				dirList += string.Format("{0}|{1}|{2}", id, pid, fullName) + "*";
 			}
 

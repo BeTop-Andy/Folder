@@ -80,10 +80,10 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="DataBaseOperator.cs" />
+    <Compile Include="DirInfoWithID.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PrefixFolder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service References\FolderWCFReference\Reference.cs">
       <AutoGen>True</AutoGen>
@@ -106,9 +106,6 @@
     <None Include="Service References\FolderWCFReference\FolderWCF.disco" />
     <None Include="Service References\FolderWCFReference\configuration91.svcinfo" />
     <None Include="Service References\FolderWCFReference\configuration.svcinfo" />
-    <None Include="Service References\FolderWCFReference\FolderWCF2.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="Service References\FolderWCFReference\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>

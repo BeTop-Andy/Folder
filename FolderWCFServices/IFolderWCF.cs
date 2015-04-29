@@ -25,7 +25,7 @@ namespace HuaweiSoftware.Folder
 		int GetId();
 
 		[OperationContract]
-		List<string> GetFileFromDB(string path);
+		string GetFileFromDB(int? PID);
 
 		[OperationContract]
 		string GetDirFromDB(string path);

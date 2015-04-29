@@ -39,9 +39,9 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
         int EndGetId(System.IAsyncResult result);
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IFolderWCF/GetFileFromDB", ReplyAction="http://tempuri.org/IFolderWCF/GetFileFromDBResponse")]
-        System.IAsyncResult BeginGetFileFromDB(string path, System.AsyncCallback callback, object asyncState);
+        System.IAsyncResult BeginGetFileFromDB(System.Nullable<int> PID, System.AsyncCallback callback, object asyncState);
         
-        System.Collections.ObjectModel.ObservableCollection<string> EndGetFileFromDB(System.IAsyncResult result);
+        string EndGetFileFromDB(System.IAsyncResult result);
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IFolderWCF/GetDirFromDB", ReplyAction="http://tempuri.org/IFolderWCF/GetDirFromDBResponse")]
         System.IAsyncResult BeginGetDirFromDB(string path, System.AsyncCallback callback, object asyncState);
@@ -102,10 +102,10 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
             this.results = results;
         }
         
-        public System.Collections.ObjectModel.ObservableCollection<string> Result {
+        public string Result {
             get {
                 base.RaiseExceptionIfNecessary();
-                return ((System.Collections.ObjectModel.ObservableCollection<string>)(this.results[0]));
+                return ((string)(this.results[0]));
             }
         }
     }
@@ -420,22 +420,22 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.IAsyncResult HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.BeginGetFileFromDB(string path, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetFileFromDB(path, callback, asyncState);
+        System.IAsyncResult HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.BeginGetFileFromDB(System.Nullable<int> PID, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetFileFromDB(PID, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Collections.ObjectModel.ObservableCollection<string> HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.EndGetFileFromDB(System.IAsyncResult result) {
+        string HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.EndGetFileFromDB(System.IAsyncResult result) {
             return base.Channel.EndGetFileFromDB(result);
         }
         
         private System.IAsyncResult OnBeginGetFileFromDB(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            string path = ((string)(inValues[0]));
-            return ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).BeginGetFileFromDB(path, callback, asyncState);
+            System.Nullable<int> PID = ((System.Nullable<int>)(inValues[0]));
+            return ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).BeginGetFileFromDB(PID, callback, asyncState);
         }
         
         private object[] OnEndGetFileFromDB(System.IAsyncResult result) {
-            System.Collections.ObjectModel.ObservableCollection<string> retVal = ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).EndGetFileFromDB(result);
+            string retVal = ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).EndGetFileFromDB(result);
             return new object[] {
                     retVal};
         }
@@ -447,11 +447,11 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
             }
         }
         
-        public void GetFileFromDBAsync(string path) {
-            this.GetFileFromDBAsync(path, null);
+        public void GetFileFromDBAsync(System.Nullable<int> PID) {
+            this.GetFileFromDBAsync(PID, null);
         }
         
-        public void GetFileFromDBAsync(string path, object userState) {
+        public void GetFileFromDBAsync(System.Nullable<int> PID, object userState) {
             if ((this.onBeginGetFileFromDBDelegate == null)) {
                 this.onBeginGetFileFromDBDelegate = new BeginOperationDelegate(this.OnBeginGetFileFromDB);
             }
@@ -462,7 +462,7 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
                 this.onGetFileFromDBCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetFileFromDBCompleted);
             }
             base.InvokeAsync(this.onBeginGetFileFromDBDelegate, new object[] {
-                        path}, this.onEndGetFileFromDBDelegate, this.onGetFileFromDBCompletedDelegate, userState);
+                        PID}, this.onEndGetFileFromDBDelegate, this.onGetFileFromDBCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -637,16 +637,16 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
                 return _result;
             }
             
-            public System.IAsyncResult BeginGetFileFromDB(string path, System.AsyncCallback callback, object asyncState) {
+            public System.IAsyncResult BeginGetFileFromDB(System.Nullable<int> PID, System.AsyncCallback callback, object asyncState) {
                 object[] _args = new object[1];
-                _args[0] = path;
+                _args[0] = PID;
                 System.IAsyncResult _result = base.BeginInvoke("GetFileFromDB", _args, callback, asyncState);
                 return _result;
             }
             
-            public System.Collections.ObjectModel.ObservableCollection<string> EndGetFileFromDB(System.IAsyncResult result) {
+            public string EndGetFileFromDB(System.IAsyncResult result) {
                 object[] _args = new object[0];
-                System.Collections.ObjectModel.ObservableCollection<string> _result = ((System.Collections.ObjectModel.ObservableCollection<string>)(base.EndInvoke("GetFileFromDB", _args, result)));
+                string _result = ((string)(base.EndInvoke("GetFileFromDB", _args, result)));
                 return _result;
             }
             

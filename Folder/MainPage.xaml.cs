@@ -12,7 +12,6 @@ namespace HuaweiSoftware.Folder
 {
 	public partial class MainPage : UserControl
 	{
-		ObservableCollection<PrefixFolder> folders;		// 文件夹的相关信息
 		ObservableCollection<string> extensions;		// 后缀名的集合
 
 		DataBaseOperator dbOp;							// 操作数据库的对象
@@ -20,8 +19,6 @@ namespace HuaweiSoftware.Folder
 		public MainPage()
 		{
 			InitializeComponent();
-			folders = new ObservableCollection<PrefixFolder>();
-			lst_Folder.ItemsSource = folders;
 
 			dbOp = new DataBaseOperator();
 
@@ -35,13 +32,10 @@ namespace HuaweiSoftware.Folder
 			try
 			{
 				string pathStr = txt_Path.Text;
+				pathStr = pathStr.Replace('\\', '/');
 
 				DirectoryInfo dir = new DirectoryInfo(pathStr);
 
-				folders.Clear();
-				folders.Add(new PrefixFolder(".", dir));
-
-				GetAllDir(dir, 0);
 				dbOp.AddFileToDB(dir, null);
 				dbOp.AddDirToDB(dir, null);
 
@@ -49,7 +43,7 @@ namespace HuaweiSoftware.Folder
 
 				SetEnabled(true);
 
-				//MessageBox.Show("保存成功");
+				MessageBox.Show("保存成功");
 			}
 			catch (Exception ex)
 			{
@@ -69,49 +63,27 @@ namespace HuaweiSoftware.Folder
 			ddlst_Extension.IsEnabled = b;
 		}
 
-		/// <summary>
-		/// 获取dir目录下的所有子目录，并加入folders集合
-		/// </summary>
-		/// <param name="dir">“根”目录</param>
-		/// <param name="level">深度</param>
-		private void GetAllDir(DirectoryInfo dir, int level)
-		{
-			IEnumerable<DirectoryInfo> dirs = dir.EnumerateDirectories();
-			string str = "";
-
-			for (int i = 0; i < level; i++)
-			{
-				str += "/ ";
-			}
-
-			foreach (DirectoryInfo di in dirs)
-			{
-				folders.Add(new PrefixFolder(str, di));
-				GetAllDir(di, level + 1);
-			}
-		}
-
-
-
 		private void lst_Folder_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			int index = lst_Folder.SelectedIndex;
 
 			if (index >= 0)
 			{
-				DirectoryInfo di = folders[index].DirInfo;
-				IEnumerable<FileInfo> files = di.EnumerateFiles();
+				DirInfoWithID dir = dbOp.DirList[index];
 
-				lst_File.Items.Clear();
+				dbOp.GetFileFromDB(dir.Id);
+				lst_File.ItemsSource = dbOp.FileList;
+
 				extensions.Clear();
 				extensions.Add("ALL");
 
-				foreach (FileInfo i in files)
+				foreach (string s in dbOp.FileList)
 				{
-					lst_File.Items.Add(i.Name);
-					if (!extensions.Contains(i.Extension))
+					MessageBox.Show(s.LastIndexOf('.').ToString(),s,MessageBoxButton.OK);
+					string fileExt = s.Substring(s.LastIndexOf('.'));	//后缀
+					if (!extensions.Contains(fileExt))
 					{
-						extensions.Add(i.Extension);
+						extensions.Add(fileExt);
 					}
 				}
 			}
@@ -119,51 +91,43 @@ namespace HuaweiSoftware.Folder
 
 		private void ddlst_Extension_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			DirectoryInfo dir = folders[lst_Folder.SelectedIndex < 0 ?
-				0 : lst_Folder.SelectedIndex].DirInfo;
-			IEnumerable<FileInfo> files = dir.EnumerateFiles();
-			lst_File.Items.Clear();
-
-			// 选择“ALL”
-			if (ddlst_Extension.SelectedIndex == 0)
-			{
-				foreach (var i in files)
-				{
-					lst_File.Items.Add(i.Name);
-				}
-			}
+			ObservableCollection<string> files = dbOp.FileList;
 
 			if (ddlst_Extension.SelectedIndex > 0)
 			{
+				files.Clear();
+
 				string extension = ddlst_Extension.SelectedValue.ToString();
 
-				foreach (var i in files)
+				foreach (var fileName in dbOp.FileList)
 				{
-					if (i.Extension == extension)
+					if (fileName.Substring(fileName.LastIndexOf('.')) == extension)
 					{
-						lst_File.Items.Add(i.Name);
+						files.Add(fileName);
 					}
 				}
 			}
+
+			lst_File.ItemsSource = files;
 		}
 
 		private void btn_Search_Click(object sender, RoutedEventArgs e)
 		{
 			string keyword = txt_Search.Text.ToLower();		// 忽略大小写
-			if (keyword != null)
-			{
-				DirectoryInfo dir = folders[lst_Folder.SelectedIndex < 0 ?
-					0 : lst_Folder.SelectedIndex].DirInfo;
-				IEnumerable<FileInfo> files = dir.EnumerateFiles();
-				lst_File.Items.Clear();
 
-				foreach (var i in files)
+			if (keyword != string.Empty)
+			{
+				ObservableCollection<string> files = new ObservableCollection<string>();
+
+				foreach (var i in dbOp.FileList)
 				{
-					if (i.Name.ToLower().Contains(keyword))
+					if (i.ToLower().Contains(keyword))
 					{
-						lst_File.Items.Add(i.Name);
+						files.Add(i);
 					}
 				}
+
+				lst_File.ItemsSource = files;
 			}
 			else
 			{
@@ -188,46 +152,7 @@ namespace HuaweiSoftware.Folder
 		{
 			if (e.Key == Key.Enter)
 			{
-				string pathStr = txt_Path.Text;
-
-				lst_File.Items.Clear();
-				folders.Clear();
-
-				try
-				{
-					DirectoryInfo dir = new DirectoryInfo(pathStr);
-
-					txt_Path.Text = dir.FullName;
-
-					folders.Clear();
-					folders.Add(new PrefixFolder(".", dir));
-
-					GetAllDir(dir, 0);
-
-					IEnumerable<FileInfo> files = dir.EnumerateFiles();
-
-					lst_File.Items.Clear();
-
-					foreach (FileInfo i in files)
-					{
-						lst_File.Items.Add(i.Name);
-						if (!extensions.Contains(i.Extension))
-						{
-							extensions.Add(i.Extension);
-						}
-					}
-
-					SetEnabled(true);
-				}
-				catch (Exception ex)
-				{
-					MessageBox.Show(ex.Message);
-
-					txt_Path.Text = "";
-					txt_Path.Focus();
-					SetEnabled(false);
-					return;
-				}
+				btn_Save_Click(null, null);
 			}
 		}
 
@@ -236,6 +161,7 @@ namespace HuaweiSoftware.Folder
 			if (dbOp.DirList.Count != 0)
 			{
 				lst_Folder.ItemsSource = dbOp.DirList;
+				SetEnabled(true);
 			}
 			else
 			{
@@ -246,7 +172,7 @@ namespace HuaweiSoftware.Folder
 					{
 						throw new Exception("目录不存在");
 					}
-
+					path = path.Replace('\\', '/');
 					dbOp.GetDirFromDB(path);
 				}
 				catch (Exception ex)
