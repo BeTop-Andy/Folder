@@ -13,41 +13,51 @@ namespace HuaweiSoftware.Folder
 		/// <summary>
 		/// 添加文件到数据库
 		/// </summary>
-		/// <param name="fileStr">文件信息字符串，格式“id|pid|fullname”</param>
-		public void AddFileToDB(string fileStr)
+		/// <param name="folders">两层的List.
+		/// 最里面那层有type,id,pid,fullname.
+		/// type:folder表示文件夹,file表示文件;
+		/// id;
+		/// pid;
+		/// fullname:带路径的文件(夹)名</param>
+		/// <returns>受影响的行数</returns>
+		public int AddListToDB(List<List<string>> folders)
 		{
 			sqlConn.Open();
+			int rowCount = 0;
 
-			string[] temp = fileStr.Split('|');
-			string id = temp[0];
-			string pid = temp[1];
-			FileInfo file = new FileInfo(temp[2]);
+			string id;
+			string pid;
+			FileInfo file;
+			DirectoryInfo dir;
+			SqlCommand sqlComm = new SqlCommand();
+			foreach (List<string> l in folders)
+			{
+				id = l[1];
+				pid = l[2];
 
-			SqlCommand sqlComm = new SqlCommand(string.Format(@"INSERT INTO FileTable([Id],[PID],[Name],[Size],[Type],[CreateTime],[Path])VALUES({0},{1},'{2}',{3},'{4}','{5}','{6}')", id, pid, file.Name, file.Length, file.Extension, file.CreationTime.ToString("yyyy-MM-dd HH:mm:ss"), file.DirectoryName.Replace('\\', '/')), sqlConn);
+				if (l[0] == "file")
+				{
+					file = new FileInfo(l[3]);
 
-			sqlComm.ExecuteNonQuery();
-		}
+					sqlComm = new SqlCommand(string.Format(@"INSERT INTO FileTable([Id],[PID],[Name],[Size],[Type],[CreateTime],[Path])VALUES({0},{1},'{2}',{3},'{4}','{5}','{6}')", id, pid, file.Name, file.Length, file.Extension, file.CreationTime.ToString("yyyy-MM-dd HH:mm:ss"), file.DirectoryName.Replace('\\', '/')), sqlConn);
+				}
+				else if (l[0] == "folder")
+				{
+					dir = new DirectoryInfo(l[3]);
 
-		/// <summary>
-		/// 添加目录到数据库
-		/// </summary>
-		/// <param name="dirStr">目录信息字符串，格式“id|pid|fullname”</param>
-		public void AddDirToDB(string dirStr)
-		{
-			sqlConn.Open();
+					long size = GetDirSize(dir);
 
-			string[] temp = dirStr.Split('|');
-			string id = temp[0];
-			string pid = temp[1];
-			DirectoryInfo dir = new DirectoryInfo(temp[2]);
+					sqlComm = new SqlCommand(string.Format(@"INSERT INTO FileTable([Id],[PID],[Name],[Size],[Type],[CreateTime],[Path])VALUES({0},{1},'{2}',{3},'{4}','{5}','{6}')", id, pid, dir.Name, size, "dir", dir.CreationTime.ToString("yyyy-MM-dd HH:mm:ss"), dir.Parent.FullName.Replace('\\', '/')), sqlConn);
+				}
+				else
+				{
+					return 0;
+				}
 
+				rowCount += sqlComm.ExecuteNonQuery();
+			}
 
-			long size = GetDirSize(dir);
-
-			SqlCommand sqlComm = new SqlCommand(string.Format(@"INSERT INTO FileTable([Id],[PID],[Name],[Size],[Type],[CreateTime],[Path])VALUES({0},{1},'{2}',{3},'{4}','{5}','{6}')", id, pid, dir.Name, size, "dir", dir.CreationTime.ToString("yyyy-MM-dd HH:mm:ss"), dir.Parent.FullName.Replace('\\', '/')), sqlConn);
-
-			sqlComm.ExecuteNonQuery();
-
+			return rowCount;
 		}
 
 		/// <summary>
@@ -156,7 +166,7 @@ namespace HuaweiSoftware.Folder
 
 			SqlCommand sqlComm = new SqlCommand(string.Format("SELECT * FROM FileTable WHERE [Path] LIKE '{0}%' AND [Type] = 'dir'", path), sqlConn);
 			SqlDataReader dr = sqlComm.ExecuteReader();
-			
+
 			string dirList = "";
 
 			int id;

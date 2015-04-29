@@ -18,15 +18,10 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="FolderWCFReference.IFolderWCF")]
     public interface IFolderWCF {
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IFolderWCF/AddFileToDB", ReplyAction="http://tempuri.org/IFolderWCF/AddFileToDBResponse")]
-        System.IAsyncResult BeginAddFileToDB(string fileStr, System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IFolderWCF/AddListToDB", ReplyAction="http://tempuri.org/IFolderWCF/AddListToDBResponse")]
+        System.IAsyncResult BeginAddListToDB(System.Collections.ObjectModel.ObservableCollection<System.Collections.ObjectModel.ObservableCollection<string>> folders, System.AsyncCallback callback, object asyncState);
         
-        void EndAddFileToDB(System.IAsyncResult result);
-        
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IFolderWCF/AddDirToDB", ReplyAction="http://tempuri.org/IFolderWCF/AddDirToDBResponse")]
-        System.IAsyncResult BeginAddDirToDB(string dirStr, System.AsyncCallback callback, object asyncState);
-        
-        void EndAddDirToDB(System.IAsyncResult result);
+        int EndAddListToDB(System.IAsyncResult result);
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IFolderWCF/Exists", ReplyAction="http://tempuri.org/IFolderWCF/ExistsResponse")]
         System.IAsyncResult BeginExists(string path, string name, System.AsyncCallback callback, object asyncState);
@@ -51,6 +46,25 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     public interface IFolderWCFChannel : HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF, System.ServiceModel.IClientChannel {
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class AddListToDBCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public AddListToDBCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public int Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((int)(this.results[0]));
+            }
+        }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -133,17 +147,11 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     public partial class FolderWCFClient : System.ServiceModel.ClientBase<HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF>, HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF {
         
-        private BeginOperationDelegate onBeginAddFileToDBDelegate;
+        private BeginOperationDelegate onBeginAddListToDBDelegate;
         
-        private EndOperationDelegate onEndAddFileToDBDelegate;
+        private EndOperationDelegate onEndAddListToDBDelegate;
         
-        private System.Threading.SendOrPostCallback onAddFileToDBCompletedDelegate;
-        
-        private BeginOperationDelegate onBeginAddDirToDBDelegate;
-        
-        private EndOperationDelegate onEndAddDirToDBDelegate;
-        
-        private System.Threading.SendOrPostCallback onAddDirToDBCompletedDelegate;
+        private System.Threading.SendOrPostCallback onAddListToDBCompletedDelegate;
         
         private BeginOperationDelegate onBeginExistsDelegate;
         
@@ -221,9 +229,7 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
             }
         }
         
-        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> AddFileToDBCompleted;
-        
-        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> AddDirToDBCompleted;
+        public event System.EventHandler<AddListToDBCompletedEventArgs> AddListToDBCompleted;
         
         public event System.EventHandler<ExistsCompletedEventArgs> ExistsCompleted;
         
@@ -238,93 +244,49 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
         public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> CloseCompleted;
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.IAsyncResult HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.BeginAddFileToDB(string fileStr, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginAddFileToDB(fileStr, callback, asyncState);
+        System.IAsyncResult HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.BeginAddListToDB(System.Collections.ObjectModel.ObservableCollection<System.Collections.ObjectModel.ObservableCollection<string>> folders, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginAddListToDB(folders, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        void HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.EndAddFileToDB(System.IAsyncResult result) {
-            base.Channel.EndAddFileToDB(result);
+        int HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.EndAddListToDB(System.IAsyncResult result) {
+            return base.Channel.EndAddListToDB(result);
         }
         
-        private System.IAsyncResult OnBeginAddFileToDB(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            string fileStr = ((string)(inValues[0]));
-            return ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).BeginAddFileToDB(fileStr, callback, asyncState);
+        private System.IAsyncResult OnBeginAddListToDB(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Collections.ObjectModel.ObservableCollection<System.Collections.ObjectModel.ObservableCollection<string>> folders = ((System.Collections.ObjectModel.ObservableCollection<System.Collections.ObjectModel.ObservableCollection<string>>)(inValues[0]));
+            return ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).BeginAddListToDB(folders, callback, asyncState);
         }
         
-        private object[] OnEndAddFileToDB(System.IAsyncResult result) {
-            ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).EndAddFileToDB(result);
-            return null;
+        private object[] OnEndAddListToDB(System.IAsyncResult result) {
+            int retVal = ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).EndAddListToDB(result);
+            return new object[] {
+                    retVal};
         }
         
-        private void OnAddFileToDBCompleted(object state) {
-            if ((this.AddFileToDBCompleted != null)) {
+        private void OnAddListToDBCompleted(object state) {
+            if ((this.AddListToDBCompleted != null)) {
                 InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.AddFileToDBCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+                this.AddListToDBCompleted(this, new AddListToDBCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
             }
         }
         
-        public void AddFileToDBAsync(string fileStr) {
-            this.AddFileToDBAsync(fileStr, null);
+        public void AddListToDBAsync(System.Collections.ObjectModel.ObservableCollection<System.Collections.ObjectModel.ObservableCollection<string>> folders) {
+            this.AddListToDBAsync(folders, null);
         }
         
-        public void AddFileToDBAsync(string fileStr, object userState) {
-            if ((this.onBeginAddFileToDBDelegate == null)) {
-                this.onBeginAddFileToDBDelegate = new BeginOperationDelegate(this.OnBeginAddFileToDB);
+        public void AddListToDBAsync(System.Collections.ObjectModel.ObservableCollection<System.Collections.ObjectModel.ObservableCollection<string>> folders, object userState) {
+            if ((this.onBeginAddListToDBDelegate == null)) {
+                this.onBeginAddListToDBDelegate = new BeginOperationDelegate(this.OnBeginAddListToDB);
             }
-            if ((this.onEndAddFileToDBDelegate == null)) {
-                this.onEndAddFileToDBDelegate = new EndOperationDelegate(this.OnEndAddFileToDB);
+            if ((this.onEndAddListToDBDelegate == null)) {
+                this.onEndAddListToDBDelegate = new EndOperationDelegate(this.OnEndAddListToDB);
             }
-            if ((this.onAddFileToDBCompletedDelegate == null)) {
-                this.onAddFileToDBCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnAddFileToDBCompleted);
+            if ((this.onAddListToDBCompletedDelegate == null)) {
+                this.onAddListToDBCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnAddListToDBCompleted);
             }
-            base.InvokeAsync(this.onBeginAddFileToDBDelegate, new object[] {
-                        fileStr}, this.onEndAddFileToDBDelegate, this.onAddFileToDBCompletedDelegate, userState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.IAsyncResult HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.BeginAddDirToDB(string dirStr, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginAddDirToDB(dirStr, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        void HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.EndAddDirToDB(System.IAsyncResult result) {
-            base.Channel.EndAddDirToDB(result);
-        }
-        
-        private System.IAsyncResult OnBeginAddDirToDB(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            string dirStr = ((string)(inValues[0]));
-            return ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).BeginAddDirToDB(dirStr, callback, asyncState);
-        }
-        
-        private object[] OnEndAddDirToDB(System.IAsyncResult result) {
-            ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).EndAddDirToDB(result);
-            return null;
-        }
-        
-        private void OnAddDirToDBCompleted(object state) {
-            if ((this.AddDirToDBCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.AddDirToDBCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void AddDirToDBAsync(string dirStr) {
-            this.AddDirToDBAsync(dirStr, null);
-        }
-        
-        public void AddDirToDBAsync(string dirStr, object userState) {
-            if ((this.onBeginAddDirToDBDelegate == null)) {
-                this.onBeginAddDirToDBDelegate = new BeginOperationDelegate(this.OnBeginAddDirToDB);
-            }
-            if ((this.onEndAddDirToDBDelegate == null)) {
-                this.onEndAddDirToDBDelegate = new EndOperationDelegate(this.OnEndAddDirToDB);
-            }
-            if ((this.onAddDirToDBCompletedDelegate == null)) {
-                this.onAddDirToDBCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnAddDirToDBCompleted);
-            }
-            base.InvokeAsync(this.onBeginAddDirToDBDelegate, new object[] {
-                        dirStr}, this.onEndAddDirToDBDelegate, this.onAddDirToDBCompletedDelegate, userState);
+            base.InvokeAsync(this.onBeginAddListToDBDelegate, new object[] {
+                        folders}, this.onEndAddListToDBDelegate, this.onAddListToDBCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -587,28 +549,17 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
                     base(client) {
             }
             
-            public System.IAsyncResult BeginAddFileToDB(string fileStr, System.AsyncCallback callback, object asyncState) {
+            public System.IAsyncResult BeginAddListToDB(System.Collections.ObjectModel.ObservableCollection<System.Collections.ObjectModel.ObservableCollection<string>> folders, System.AsyncCallback callback, object asyncState) {
                 object[] _args = new object[1];
-                _args[0] = fileStr;
-                System.IAsyncResult _result = base.BeginInvoke("AddFileToDB", _args, callback, asyncState);
+                _args[0] = folders;
+                System.IAsyncResult _result = base.BeginInvoke("AddListToDB", _args, callback, asyncState);
                 return _result;
             }
             
-            public void EndAddFileToDB(System.IAsyncResult result) {
+            public int EndAddListToDB(System.IAsyncResult result) {
                 object[] _args = new object[0];
-                base.EndInvoke("AddFileToDB", _args, result);
-            }
-            
-            public System.IAsyncResult BeginAddDirToDB(string dirStr, System.AsyncCallback callback, object asyncState) {
-                object[] _args = new object[1];
-                _args[0] = dirStr;
-                System.IAsyncResult _result = base.BeginInvoke("AddDirToDB", _args, callback, asyncState);
+                int _result = ((int)(base.EndInvoke("AddListToDB", _args, result)));
                 return _result;
-            }
-            
-            public void EndAddDirToDB(System.IAsyncResult result) {
-                object[] _args = new object[0];
-                base.EndInvoke("AddDirToDB", _args, result);
             }
             
             public System.IAsyncResult BeginExists(string path, string name, System.AsyncCallback callback, object asyncState) {

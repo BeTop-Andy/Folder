@@ -37,6 +37,8 @@ namespace HuaweiSoftware.Folder
 			}
 		}
 
+		private ObservableCollection<ObservableCollection<string>> folders;
+
 		public DataBaseOperator()
 		{
 			webClient = new FolderWCFClient();
@@ -46,6 +48,7 @@ namespace HuaweiSoftware.Folder
 
 			FileList = new ObservableCollection<string>();
 			DirList = new ObservableCollection<DirInfoWithID>();
+			folders = new ObservableCollection<ObservableCollection<string>>();
 		}
 
 		public bool CheckExists(string path, string name)
@@ -62,50 +65,97 @@ namespace HuaweiSoftware.Folder
 		}
 
 		/// <summary>
-		/// 获取dir目录下的所有子目录，并加入数据库
+		/// 获取dir目录下的所有子目录，并加入List
 		/// </summary>
 		/// <param name="dir">“根”目录</param>
 		/// <param name="pid">父节点的Id</param>
-		public void AddDirToDB(DirectoryInfo dir, int? pid)
+		public void AddDirToList(DirectoryInfo dir, int? pid)
 		{
 			IEnumerable<DirectoryInfo> dirs = dir.EnumerateDirectories();
 
+			ObservableCollection<string> folder;
 			foreach (DirectoryInfo di in dirs)
 			{
 				int tmp_id = id;
 
 				//if (!CheckExists(di.Parent.FullName, di.Name))
 				//{
-				webClient.AddDirToDBAsync(string.Format("{0}|{1}|{2}", id, pid.HasValue ? pid.Value.ToString() : "NULL", di.FullName));
+				//MessageBox.Show(id.ToString());
+				folder = new ObservableCollection<string>();
+				folder.Add("folder");
+				folder.Add(id.ToString());
+				folder.Add(pid.HasValue ? pid.Value.ToString() : "NULL");
+				folder.Add(di.FullName);
+				/*foreach (var file in folders)
+				{
+					MessageBox.Show("preFolders: " + file[0] + " | " + file[1] + " | " + file[2] + " | " + file[3]);
+				}
+				MessageBox.Show("Folder: " + folder[0] + " | " + folder[1] + " | " + folder[2] + " | " + folder[3]);*/
+				folders.Add(folder);
+				/*foreach (var file in folders)
+				{
+					MessageBox.Show("Folders: " + file[0] + " | " + file[1] + " | " + file[2] + " | " + file[3]);
+				}*/
 
 				id++;
 				//}
 
-				AddFileToDB(di, tmp_id);
-				AddDirToDB(di, tmp_id);
+				AddFileToList(di, tmp_id);
+				AddDirToList(di, tmp_id);
 			}
 		}
 
 		/// <summary>
-		/// 获取dir目录下的所有文件，并加入数据库
+		/// 获取dir目录下的所有文件，并加入List
 		/// </summary>
 		/// <param name="dir">“根”目录</param>
 		/// <param name="pid">父节点的Id</param>
-		public void AddFileToDB(DirectoryInfo dir, int? pid)
+		public void AddFileToList(DirectoryInfo dir, int? pid)
 		{
 			IEnumerable<FileInfo> files = dir.EnumerateFiles();
+			ObservableCollection<string> file;
 
 			foreach (FileInfo fi in files)
 			{
 				//if (!CheckExists(fi.DirectoryName, fi.Name))
 				//{
-				webClient.AddFileToDBAsync(string.Format("{0}|{1}|{2}", id, pid.HasValue ? pid.Value.ToString() : "NULL", fi.FullName));
+				//MessageBox.Show(id.ToString());
+				file = new ObservableCollection<string>();
+				file.Add("file");
+				file.Add(id.ToString());
+				file.Add(pid.HasValue ? pid.Value.ToString() : "NULL");
+				file.Add(fi.FullName);
+				folders.Add(file);
+				//MessageBox.Show("id:" + file[1]);
 
 				id++;
 				//}
 			}
 		}
 
+		public void AddListToDB()
+		{
+			MessageBox.Show(folders.Count.ToString());
+			webClient.AddListToDBCompleted -= ((sender, e) =>
+			{
+				MessageBox.Show("成功插入" + e.Result + "行\n保存完毕");
+			});
+			webClient.AddListToDBCompleted += ((sender, e) =>
+			{
+				MessageBox.Show("成功插入" + e.Result + "行\n保存完毕");
+			});
+
+			/*foreach (var file in folders)
+			{
+				MessageBox.Show(file[0] + " | " + file[1] + " | " + file[2] + " | " + file[3]);
+			}*/
+			webClient.AddListToDBAsync(folders);
+		}
+
+		public void ClearDBList()
+		{
+			folders.Clear();
+		}
 
 		/// <summary>
 		/// 根据目录ID从数据库中读取该目录下的文件
@@ -131,12 +181,12 @@ namespace HuaweiSoftware.Folder
 			webClient.GetFileFromDBAsync(pid);
 		}
 
-		private void GetFileFromDBCompleted (object sender, GetFileFromDBCompletedEventArgs e)
+		private void GetFileFromDBCompleted(object sender, GetFileFromDBCompletedEventArgs e)
 		{
 			string[] files = e.Result.Split('*');		// 返回值的中文件名用*分隔
 
 			FileList.Clear();
-			foreach(string s in files)		
+			foreach (string s in files)
 			{
 				FileList.Add(s);
 			}
@@ -153,7 +203,7 @@ namespace HuaweiSoftware.Folder
 			DirList.Clear();
 
 			// 把选择的目录加进去，以看到该目录下的文件
-			DirList.Add(new DirInfoWithID(0, null, new DirectoryInfo(path)));	
+			DirList.Add(new DirInfoWithID(0, null, new DirectoryInfo(path)));
 
 			webClient.GetDirFromDBAsync(path);
 		}
@@ -163,7 +213,7 @@ namespace HuaweiSoftware.Folder
 			string[] dirStringArray = e.Result.Split('*');
 
 			// silverlight不支持DataTable，所以用二维数组模拟DataTable
-			string[][] dirs = new string[dirStringArray.Length-1][];
+			string[][] dirs = new string[dirStringArray.Length - 1][];
 
 			for (int i = 0; i < dirStringArray.Length - 1; i++)
 			{
@@ -173,7 +223,7 @@ namespace HuaweiSoftware.Folder
 			Queue<string[]> q = new Queue<string[]>();
 
 			// 添加PID为NULL的目录到队列中，表示成几棵目录树的根节点
-			for (int i = 0; i < dirs.Length; i++)		
+			for (int i = 0; i < dirs.Length; i++)
 			{
 				if (dirs[i][1] == "NULL")				// PID为NULL
 				{
@@ -182,13 +232,13 @@ namespace HuaweiSoftware.Folder
 			}
 
 			// 先序遍历各棵目录树
-			foreach(string[] i in q)
+			foreach (string[] i in q)
 			{
 				AddToDirList(i);
 
 				GetAllChildren(dirs, i);
 			}
-			
+
 			MessageBox.Show("载入完成，请再点击加载按钮");
 		}
 
@@ -202,7 +252,7 @@ namespace HuaweiSoftware.Folder
 			foreach (string[] j in dirs)
 			{
 				if (j[1] == i[0])			//j的PID等于i的ID
-				{		
+				{
 					AddToDirList(j);
 					GetAllChildren(dirs, j);
 				}

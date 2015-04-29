@@ -13,10 +13,7 @@ namespace HuaweiSoftware.Folder
 	public interface IFolderWCF
 	{
 		[OperationContract]
-		void AddFileToDB(string fileStr);
-
-		[OperationContract]
-		void AddDirToDB(string dirStr);
+		int AddListToDB(List<List<string>> folders);
 
 		[OperationContract]
 		bool Exists(string path, string name);

@@ -36,14 +36,15 @@ namespace HuaweiSoftware.Folder
 
 				DirectoryInfo dir = new DirectoryInfo(pathStr);
 
-				dbOp.AddFileToDB(dir, null);
-				dbOp.AddDirToDB(dir, null);
+				//分4步保存到数据库
+				dbOp.ClearDBList();					//先清空列表
+				dbOp.AddFileToList(dir, null);		//本目录下的文件
+				dbOp.AddDirToList(dir, null);		//本目录下的子目录(包括文件)
+				dbOp.AddListToDB();					//保存到数据库
 
 				DataBaseOperator.Id++;		// 为了分隔开
 
 				SetEnabled(true);
-
-				MessageBox.Show("保存成功");
 			}
 			catch (Exception ex)
 			{

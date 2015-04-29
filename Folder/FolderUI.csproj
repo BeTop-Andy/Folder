@@ -106,6 +106,9 @@
     <None Include="Service References\FolderWCFReference\FolderWCF.disco" />
     <None Include="Service References\FolderWCFReference\configuration91.svcinfo" />
     <None Include="Service References\FolderWCFReference\configuration.svcinfo" />
+    <None Include="Service References\FolderWCFReference\FolderWCF2.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\FolderWCFReference\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
