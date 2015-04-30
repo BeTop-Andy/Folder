@@ -49,8 +49,6 @@ namespace HuaweiSoftware.Folder
 				dbOp.AddFileToList(dir, null);		//本目录下的文件
 				dbOp.AddDirToList(dir, null);		//本目录下的子目录(包括文件)
 				dbOp.AddListToDB();					//保存到数据库
-
-				SetEnabled(true);
 			}
 			catch (Exception ex)
 			{
@@ -63,6 +61,11 @@ namespace HuaweiSoftware.Folder
 			}
 		}
 
+		/// <summary>
+		/// 检查路径是否以“：”结尾
+		/// </summary>
+		/// <param name="path">路径</param>
+		/// <returns></returns>
 		private bool CheckPath(string path)
 		{
 			if (path.EndsWith(":") || path.EndsWith(":\\") || path.EndsWith(":/"))
@@ -89,30 +92,18 @@ namespace HuaweiSoftware.Folder
 				DirNameWithID dir = dbOp.DirList[index];
 
 				dbOp.GetFileListFromDB(dir.Id);
-				lst_File.ItemsSource = dbOp.FileList;
 
-				extensions.Clear();
-				extensions.Add("ALL");
-
-				foreach (FileInfo file in dbOp.FileList)
-				{
-					string fileExt = file.Extension;		//后缀
-					if (!extensions.Contains(fileExt))
-					{
-						extensions.Add(fileExt);
-					}
-				}
+				dbOp.onLoadFileFinish -= new EventHandler(LoadFileFinish);
+				dbOp.onLoadFileFinish += new EventHandler(LoadFileFinish);
 			}
 		}
 
  		private void ddlst_Extension_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			ObservableCollection<FileInfo> files = dbOp.FileList;
+			ObservableCollection<FileInfo> files = new ObservableCollection<FileInfo>();
 
 			if (ddlst_Extension.SelectedIndex > 0)
 			{
-				files.Clear();
-
 				string extension = ddlst_Extension.SelectedValue.ToString();
 
 				foreach (var fileName in dbOp.FileList)
@@ -174,14 +165,35 @@ namespace HuaweiSoftware.Folder
 
 		private void btn_Load_Click(object sender, RoutedEventArgs e)
 		{
-			if (dbOp.DirList.Count != 0)
+			dbOp.GetDirFromDB();
+			dbOp.onLoadDirFinish += new EventHandler(LoadDirFinish);
+		}
+
+		/// <summary>
+		/// 读取完成，绑定数据源
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void LoadDirFinish(object sender, EventArgs e)
+		{
+			lst_Folder.ItemsSource = dbOp.DirList;
+			SetEnabled(true);
+		}
+
+		private void LoadFileFinish(object sender, EventArgs e)
+		{
+			lst_File.ItemsSource = dbOp.FileList;
+
+			extensions.Clear();
+			extensions.Add("ALL");
+
+			foreach (FileInfo file in dbOp.FileList)
 			{
-				lst_Folder.ItemsSource = dbOp.DirList;
-				SetEnabled(true);
-			}
-			else
-			{
-				dbOp.GetDirFromDB();
+				string fileExt = file.Extension;		//后缀
+				if (!extensions.Contains(fileExt))
+				{
+					extensions.Add(fileExt);
+				}
 			}
 		}
 	}

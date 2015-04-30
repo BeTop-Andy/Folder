@@ -12,6 +12,10 @@ namespace HuaweiSoftware.Folder
 	{
 		static private FolderWCFClient webClient;
 
+		static private int id;
+
+		private List<List<string>> folders;
+
 		public ObservableCollection<FileInfo> FileList
 		{
 			get;
@@ -24,20 +28,8 @@ namespace HuaweiSoftware.Folder
 			set;
 		}
 
-		static private int id;
-		public static int Id
-		{
-			get
-			{
-				return DataBaseOperator.id;
-			}
-			set
-			{
-				DataBaseOperator.id = value;
-			}
-		}
-
-		private List<List<string>> folders;
+		public event EventHandler onLoadDirFinish;		//触发读取目录完成事件
+		public event EventHandler onLoadFileFinish;		//触发读取文件完成事件
 
 		public DataBaseOperator()
 		{
@@ -64,7 +56,7 @@ namespace HuaweiSoftware.Folder
 			{
 				int tmp_id = id;
 
-				folder = new List<string>();
+				folder = new List<string>();		//临时变量
 				folder.Add("folder");
 				folder.Add(id.ToString());
 				folder.Add(pid.HasValue ? pid.Value.ToString() : "NULL");
@@ -91,7 +83,7 @@ namespace HuaweiSoftware.Folder
 
 			foreach (FileInfo fi in files)
 			{
-				file = new List<string>();
+				file = new List<string>();		//临时变量
 				file.Add("file");
 				file.Add(id.ToString());
 				file.Add(pid.HasValue ? pid.Value.ToString() : "NULL");
@@ -152,6 +144,8 @@ namespace HuaweiSoftware.Folder
 				fi = new FileInfo(file[2]);
 				FileList.Add(fi);
 			}
+
+			onLoadFileFinish(null, null);
 		}
 
 		/// <summary>
@@ -193,7 +187,7 @@ namespace HuaweiSoftware.Folder
 				GetAllChildren(folders, treeRoot, 2);
 			}
 
-			MessageBox.Show("载入完成，请再点击加载按钮");
+			onLoadDirFinish(null, null);
 		}
 
 		private void AddToDirList(List<string> dir, int level)
