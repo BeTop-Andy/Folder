@@ -43,8 +43,10 @@ namespace HuaweiSoftware.Folder
 		{
 			webClient = new FolderWCFClient();
 
-			webClient.GetIdCompleted += ((sender, e) => id = e.Result + 1);
-			webClient.GetIdAsync();
+			//webClient.GetIdCompleted += ((sender, e) => id = e.Result + 1);
+			//webClient.GetIdAsync();
+
+			id = 1;
 
 			FileList = new ObservableCollection<FileInfo>();
 			DirList = new ObservableCollection<DirInfoWithID>();
