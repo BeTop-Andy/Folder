@@ -12,7 +12,7 @@ namespace HuaweiSoftware.Folder
 	{
 		static private FolderWCFClient webClient;
 
-		public ObservableCollection<string> FileList
+		public ObservableCollection<FileInfo> FileList
 		{
 			get;
 			set;
@@ -37,7 +37,7 @@ namespace HuaweiSoftware.Folder
 			}
 		}
 
-		private ObservableCollection<ObservableCollection<string>> folders;
+		private List<List<string>> folders;
 
 		public DataBaseOperator()
 		{
@@ -46,9 +46,9 @@ namespace HuaweiSoftware.Folder
 			webClient.GetIdCompleted += ((sender, e) => id = e.Result + 1);
 			webClient.GetIdAsync();
 
-			FileList = new ObservableCollection<string>();
+			FileList = new ObservableCollection<FileInfo>();
 			DirList = new ObservableCollection<DirInfoWithID>();
-			folders = new ObservableCollection<ObservableCollection<string>>();
+			folders = new List<List<string>>();
 		}
 
 		public bool CheckExists(string path, string name)
@@ -73,7 +73,7 @@ namespace HuaweiSoftware.Folder
 		{
 			IEnumerable<DirectoryInfo> dirs = dir.EnumerateDirectories();
 
-			ObservableCollection<string> folder;
+			List<string> folder;
 			foreach (DirectoryInfo di in dirs)
 			{
 				int tmp_id = id;
@@ -81,7 +81,7 @@ namespace HuaweiSoftware.Folder
 				//if (!CheckExists(di.Parent.FullName, di.Name))
 				//{
 				//MessageBox.Show(id.ToString());
-				folder = new ObservableCollection<string>();
+				folder = new List<string>();
 				folder.Add("folder");
 				folder.Add(id.ToString());
 				folder.Add(pid.HasValue ? pid.Value.ToString() : "NULL");
@@ -113,14 +113,14 @@ namespace HuaweiSoftware.Folder
 		public void AddFileToList(DirectoryInfo dir, int? pid)
 		{
 			IEnumerable<FileInfo> files = dir.EnumerateFiles();
-			ObservableCollection<string> file;
+			List<string> file;
 
 			foreach (FileInfo fi in files)
 			{
 				//if (!CheckExists(fi.DirectoryName, fi.Name))
 				//{
 				//MessageBox.Show(id.ToString());
-				file = new ObservableCollection<string>();
+				file = new List<string>();
 				file.Add("file");
 				file.Add(id.ToString());
 				file.Add(pid.HasValue ? pid.Value.ToString() : "NULL");
@@ -157,14 +157,10 @@ namespace HuaweiSoftware.Folder
 			folders.Clear();
 		}
 
-		/// <summary>
-		/// 根据目录ID从数据库中读取该目录下的文件
-		/// </summary>
-		/// <param name="id">目录ID</param>
-		public void GetFileFromDB(int id)
+		public void GetFileListFromDB(string path, int id)
 		{
-			webClient.GetFileFromDBCompleted -= new EventHandler<GetFileFromDBCompletedEventArgs>(GetFileFromDBCompleted);
-			webClient.GetFileFromDBCompleted += new EventHandler<GetFileFromDBCompletedEventArgs>(GetFileFromDBCompleted);
+			webClient.GetFileListFromDBCompleted -= new EventHandler<GetFileListFromDBCompletedEventArgs>(GetFileListFromDBCompleted);
+			webClient.GetFileListFromDBCompleted += new EventHandler<GetFileListFromDBCompletedEventArgs>(GetFileListFromDBCompleted);
 
 			int? pid;
 
@@ -178,17 +174,21 @@ namespace HuaweiSoftware.Folder
 				pid = id;
 			}
 
-			webClient.GetFileFromDBAsync(pid);
+			webClient.GetFileListFromDBAsync(path, pid);
 		}
 
-		private void GetFileFromDBCompleted(object sender, GetFileFromDBCompletedEventArgs e)
+		private void GetFileListFromDBCompleted(object sender, GetFileListFromDBCompletedEventArgs e)
 		{
-			string[] files = e.Result.Split('*');		// 返回值的中文件名用*分隔
+			List<List<string>> files = e.Result;
+			FileInfo fi;
+
 
 			FileList.Clear();
-			foreach (string s in files)
+
+			foreach (var file in files)
 			{
-				FileList.Add(s);
+				fi = new FileInfo(file[2]);
+				FileList.Add(fi);
 			}
 		}
 
@@ -198,82 +198,75 @@ namespace HuaweiSoftware.Folder
 		/// <param name="path">目录地址</param>
 		public void GetDirFromDB(string path)
 		{
-			webClient.GetDirFromDBCompleted += new EventHandler<GetDirFromDBCompletedEventArgs>(GetDirFromDBCompleted);
+			webClient.GetDirListFromDBCompleted += new EventHandler<GetDirListFromDBCompletedEventArgs>(GetDirListFromDBCompleted);
 
 			DirList.Clear();
 
 			// 把选择的目录加进去，以看到该目录下的文件
 			DirList.Add(new DirInfoWithID(0, null, new DirectoryInfo(path)));
 
-			webClient.GetDirFromDBAsync(path);
+			webClient.GetDirListFromDBAsync(path);
 		}
 
-		private void GetDirFromDBCompleted(object sender, GetDirFromDBCompletedEventArgs e)
+		private void GetDirListFromDBCompleted(object sender, GetDirListFromDBCompletedEventArgs e)
 		{
-			string[] dirStringArray = e.Result.Split('*');
+			List<List<string>> folders = e.Result;
 
-			// silverlight不支持DataTable，所以用二维数组模拟DataTable
-			string[][] dirs = new string[dirStringArray.Length - 1][];
+			// 用于存放PID为NULL的目录，相当于几棵目录树的根节点，所以叫treeRoots
+			List<List<string>> treeRoots = new List<List<string>>();
 
-			for (int i = 0; i < dirStringArray.Length - 1; i++)
+			foreach (var dir in folders)
 			{
-				dirs[i] = dirStringArray[i].Split('|');
-			}
-
-			Queue<string[]> q = new Queue<string[]>();
-
-			// 添加PID为NULL的目录到队列中，表示成几棵目录树的根节点
-			for (int i = 0; i < dirs.Length; i++)
-			{
-				if (dirs[i][1] == "NULL")				// PID为NULL
+				if (dir[1] == "NULL")
 				{
-					q.Enqueue(dirs[i]);
+					treeRoots.Add(dir);
 				}
 			}
 
 			// 先序遍历各棵目录树
-			foreach (string[] i in q)
+			foreach (var treeRoot in treeRoots)
 			{
-				AddToDirList(i);
+				AddToDirList(treeRoot);
 
-				GetAllChildren(dirs, i);
+				GetAllChildren(folders, treeRoot);
 			}
 
 			MessageBox.Show("载入完成，请再点击加载按钮");
+		}
+
+		private void AddToDirList(List<string> dir)
+		{
+			int id = Convert.ToInt32(dir[0]);
+			int? pid = null;
+			try
+			{
+				pid = Convert.ToInt32(dir[1]);
+			}
+			catch
+			{
+				pid = null;
+			}
+			DirectoryInfo info = new DirectoryInfo(dir[2]);
+
+			DirList.Add(new DirInfoWithID(id, pid, info));
 		}
 
 		/// <summary>
 		/// Get所有孩子节点
 		/// </summary>
 		/// <param name="dirs">所有目录</param>
-		/// <param name="i"></param>
-		private void GetAllChildren(string[][] dirs, string[] i)
+		/// <param name="dir"></param>
+		private void GetAllChildren(List<List<string>> dirs, List<string> dir)
 		{
-			foreach (string[] j in dirs)
+			foreach (List<string> nowDir in dirs)
 			{
-				if (j[1] == i[0])			//j的PID等于i的ID
+				if (nowDir[1] == dir[0])			//nowDir的PID等于dir的ID
 				{
-					AddToDirList(j);
-					GetAllChildren(dirs, j);
+					AddToDirList(nowDir);
+
+					GetAllChildren(dirs, nowDir);
 				}
 			}
-		}
-
-		private void AddToDirList(string[] dirString)
-		{
-			int id = Convert.ToInt32(dirString[0]);
-			int? pid = null;
-			try
-			{
-				pid = Convert.ToInt32(dirString[1]);
-			}
-			catch
-			{
-				pid = null;
-			}
-			DirectoryInfo info = new DirectoryInfo(dirString[2]);
-
-			DirList.Add(new DirInfoWithID(id, pid, info));
 		}
 	}
 }

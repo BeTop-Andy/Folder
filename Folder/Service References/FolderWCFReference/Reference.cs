@@ -19,7 +19,7 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
     public interface IFolderWCF {
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IFolderWCF/AddListToDB", ReplyAction="http://tempuri.org/IFolderWCF/AddListToDBResponse")]
-        System.IAsyncResult BeginAddListToDB(System.Collections.ObjectModel.ObservableCollection<System.Collections.ObjectModel.ObservableCollection<string>> folders, System.AsyncCallback callback, object asyncState);
+        System.IAsyncResult BeginAddListToDB(System.Collections.Generic.List<System.Collections.Generic.List<string>> folders, System.AsyncCallback callback, object asyncState);
         
         int EndAddListToDB(System.IAsyncResult result);
         
@@ -33,15 +33,15 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
         
         int EndGetId(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IFolderWCF/GetFileFromDB", ReplyAction="http://tempuri.org/IFolderWCF/GetFileFromDBResponse")]
-        System.IAsyncResult BeginGetFileFromDB(System.Nullable<int> PID, System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IFolderWCF/GetDirListFromDB", ReplyAction="http://tempuri.org/IFolderWCF/GetDirListFromDBResponse")]
+        System.IAsyncResult BeginGetDirListFromDB(string path, System.AsyncCallback callback, object asyncState);
         
-        string EndGetFileFromDB(System.IAsyncResult result);
+        System.Collections.Generic.List<System.Collections.Generic.List<string>> EndGetDirListFromDB(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IFolderWCF/GetDirFromDB", ReplyAction="http://tempuri.org/IFolderWCF/GetDirFromDBResponse")]
-        System.IAsyncResult BeginGetDirFromDB(string path, System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IFolderWCF/GetFileListFromDB", ReplyAction="http://tempuri.org/IFolderWCF/GetFileListFromDBResponse")]
+        System.IAsyncResult BeginGetFileListFromDB(string path, System.Nullable<int> PID, System.AsyncCallback callback, object asyncState);
         
-        string EndGetDirFromDB(System.IAsyncResult result);
+        System.Collections.Generic.List<System.Collections.Generic.List<string>> EndGetFileListFromDB(System.IAsyncResult result);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -107,38 +107,38 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class GetFileFromDBCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class GetDirListFromDBCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        public GetFileFromDBCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        public GetDirListFromDBCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
         
-        public string Result {
+        public System.Collections.Generic.List<System.Collections.Generic.List<string>> Result {
             get {
                 base.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
+                return ((System.Collections.Generic.List<System.Collections.Generic.List<string>>)(this.results[0]));
             }
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class GetDirFromDBCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class GetFileListFromDBCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        public GetDirFromDBCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        public GetFileListFromDBCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
         
-        public string Result {
+        public System.Collections.Generic.List<System.Collections.Generic.List<string>> Result {
             get {
                 base.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
+                return ((System.Collections.Generic.List<System.Collections.Generic.List<string>>)(this.results[0]));
             }
         }
     }
@@ -165,17 +165,17 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
         
         private System.Threading.SendOrPostCallback onGetIdCompletedDelegate;
         
-        private BeginOperationDelegate onBeginGetFileFromDBDelegate;
+        private BeginOperationDelegate onBeginGetDirListFromDBDelegate;
         
-        private EndOperationDelegate onEndGetFileFromDBDelegate;
+        private EndOperationDelegate onEndGetDirListFromDBDelegate;
         
-        private System.Threading.SendOrPostCallback onGetFileFromDBCompletedDelegate;
+        private System.Threading.SendOrPostCallback onGetDirListFromDBCompletedDelegate;
         
-        private BeginOperationDelegate onBeginGetDirFromDBDelegate;
+        private BeginOperationDelegate onBeginGetFileListFromDBDelegate;
         
-        private EndOperationDelegate onEndGetDirFromDBDelegate;
+        private EndOperationDelegate onEndGetFileListFromDBDelegate;
         
-        private System.Threading.SendOrPostCallback onGetDirFromDBCompletedDelegate;
+        private System.Threading.SendOrPostCallback onGetFileListFromDBCompletedDelegate;
         
         private BeginOperationDelegate onBeginOpenDelegate;
         
@@ -235,16 +235,16 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
         
         public event System.EventHandler<GetIdCompletedEventArgs> GetIdCompleted;
         
-        public event System.EventHandler<GetFileFromDBCompletedEventArgs> GetFileFromDBCompleted;
+        public event System.EventHandler<GetDirListFromDBCompletedEventArgs> GetDirListFromDBCompleted;
         
-        public event System.EventHandler<GetDirFromDBCompletedEventArgs> GetDirFromDBCompleted;
+        public event System.EventHandler<GetFileListFromDBCompletedEventArgs> GetFileListFromDBCompleted;
         
         public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> OpenCompleted;
         
         public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> CloseCompleted;
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.IAsyncResult HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.BeginAddListToDB(System.Collections.ObjectModel.ObservableCollection<System.Collections.ObjectModel.ObservableCollection<string>> folders, System.AsyncCallback callback, object asyncState) {
+        System.IAsyncResult HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.BeginAddListToDB(System.Collections.Generic.List<System.Collections.Generic.List<string>> folders, System.AsyncCallback callback, object asyncState) {
             return base.Channel.BeginAddListToDB(folders, callback, asyncState);
         }
         
@@ -254,7 +254,7 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
         }
         
         private System.IAsyncResult OnBeginAddListToDB(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            System.Collections.ObjectModel.ObservableCollection<System.Collections.ObjectModel.ObservableCollection<string>> folders = ((System.Collections.ObjectModel.ObservableCollection<System.Collections.ObjectModel.ObservableCollection<string>>)(inValues[0]));
+            System.Collections.Generic.List<System.Collections.Generic.List<string>> folders = ((System.Collections.Generic.List<System.Collections.Generic.List<string>>)(inValues[0]));
             return ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).BeginAddListToDB(folders, callback, asyncState);
         }
         
@@ -271,11 +271,11 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
             }
         }
         
-        public void AddListToDBAsync(System.Collections.ObjectModel.ObservableCollection<System.Collections.ObjectModel.ObservableCollection<string>> folders) {
+        public void AddListToDBAsync(System.Collections.Generic.List<System.Collections.Generic.List<string>> folders) {
             this.AddListToDBAsync(folders, null);
         }
         
-        public void AddListToDBAsync(System.Collections.ObjectModel.ObservableCollection<System.Collections.ObjectModel.ObservableCollection<string>> folders, object userState) {
+        public void AddListToDBAsync(System.Collections.Generic.List<System.Collections.Generic.List<string>> folders, object userState) {
             if ((this.onBeginAddListToDBDelegate == null)) {
                 this.onBeginAddListToDBDelegate = new BeginOperationDelegate(this.OnBeginAddListToDB);
             }
@@ -382,95 +382,97 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.IAsyncResult HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.BeginGetFileFromDB(System.Nullable<int> PID, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetFileFromDB(PID, callback, asyncState);
+        System.IAsyncResult HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.BeginGetDirListFromDB(string path, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetDirListFromDB(path, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        string HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.EndGetFileFromDB(System.IAsyncResult result) {
-            return base.Channel.EndGetFileFromDB(result);
+        System.Collections.Generic.List<System.Collections.Generic.List<string>> HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.EndGetDirListFromDB(System.IAsyncResult result) {
+            return base.Channel.EndGetDirListFromDB(result);
         }
         
-        private System.IAsyncResult OnBeginGetFileFromDB(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            System.Nullable<int> PID = ((System.Nullable<int>)(inValues[0]));
-            return ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).BeginGetFileFromDB(PID, callback, asyncState);
-        }
-        
-        private object[] OnEndGetFileFromDB(System.IAsyncResult result) {
-            string retVal = ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).EndGetFileFromDB(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetFileFromDBCompleted(object state) {
-            if ((this.GetFileFromDBCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetFileFromDBCompleted(this, new GetFileFromDBCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetFileFromDBAsync(System.Nullable<int> PID) {
-            this.GetFileFromDBAsync(PID, null);
-        }
-        
-        public void GetFileFromDBAsync(System.Nullable<int> PID, object userState) {
-            if ((this.onBeginGetFileFromDBDelegate == null)) {
-                this.onBeginGetFileFromDBDelegate = new BeginOperationDelegate(this.OnBeginGetFileFromDB);
-            }
-            if ((this.onEndGetFileFromDBDelegate == null)) {
-                this.onEndGetFileFromDBDelegate = new EndOperationDelegate(this.OnEndGetFileFromDB);
-            }
-            if ((this.onGetFileFromDBCompletedDelegate == null)) {
-                this.onGetFileFromDBCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetFileFromDBCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetFileFromDBDelegate, new object[] {
-                        PID}, this.onEndGetFileFromDBDelegate, this.onGetFileFromDBCompletedDelegate, userState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.IAsyncResult HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.BeginGetDirFromDB(string path, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetDirFromDB(path, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        string HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.EndGetDirFromDB(System.IAsyncResult result) {
-            return base.Channel.EndGetDirFromDB(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetDirFromDB(object[] inValues, System.AsyncCallback callback, object asyncState) {
+        private System.IAsyncResult OnBeginGetDirListFromDB(object[] inValues, System.AsyncCallback callback, object asyncState) {
             string path = ((string)(inValues[0]));
-            return ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).BeginGetDirFromDB(path, callback, asyncState);
+            return ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).BeginGetDirListFromDB(path, callback, asyncState);
         }
         
-        private object[] OnEndGetDirFromDB(System.IAsyncResult result) {
-            string retVal = ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).EndGetDirFromDB(result);
+        private object[] OnEndGetDirListFromDB(System.IAsyncResult result) {
+            System.Collections.Generic.List<System.Collections.Generic.List<string>> retVal = ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).EndGetDirListFromDB(result);
             return new object[] {
                     retVal};
         }
         
-        private void OnGetDirFromDBCompleted(object state) {
-            if ((this.GetDirFromDBCompleted != null)) {
+        private void OnGetDirListFromDBCompleted(object state) {
+            if ((this.GetDirListFromDBCompleted != null)) {
                 InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetDirFromDBCompleted(this, new GetDirFromDBCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+                this.GetDirListFromDBCompleted(this, new GetDirListFromDBCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
             }
         }
         
-        public void GetDirFromDBAsync(string path) {
-            this.GetDirFromDBAsync(path, null);
+        public void GetDirListFromDBAsync(string path) {
+            this.GetDirListFromDBAsync(path, null);
         }
         
-        public void GetDirFromDBAsync(string path, object userState) {
-            if ((this.onBeginGetDirFromDBDelegate == null)) {
-                this.onBeginGetDirFromDBDelegate = new BeginOperationDelegate(this.OnBeginGetDirFromDB);
+        public void GetDirListFromDBAsync(string path, object userState) {
+            if ((this.onBeginGetDirListFromDBDelegate == null)) {
+                this.onBeginGetDirListFromDBDelegate = new BeginOperationDelegate(this.OnBeginGetDirListFromDB);
             }
-            if ((this.onEndGetDirFromDBDelegate == null)) {
-                this.onEndGetDirFromDBDelegate = new EndOperationDelegate(this.OnEndGetDirFromDB);
+            if ((this.onEndGetDirListFromDBDelegate == null)) {
+                this.onEndGetDirListFromDBDelegate = new EndOperationDelegate(this.OnEndGetDirListFromDB);
             }
-            if ((this.onGetDirFromDBCompletedDelegate == null)) {
-                this.onGetDirFromDBCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetDirFromDBCompleted);
+            if ((this.onGetDirListFromDBCompletedDelegate == null)) {
+                this.onGetDirListFromDBCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetDirListFromDBCompleted);
             }
-            base.InvokeAsync(this.onBeginGetDirFromDBDelegate, new object[] {
-                        path}, this.onEndGetDirFromDBDelegate, this.onGetDirFromDBCompletedDelegate, userState);
+            base.InvokeAsync(this.onBeginGetDirListFromDBDelegate, new object[] {
+                        path}, this.onEndGetDirListFromDBDelegate, this.onGetDirListFromDBCompletedDelegate, userState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.IAsyncResult HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.BeginGetFileListFromDB(string path, System.Nullable<int> PID, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetFileListFromDB(path, PID, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Collections.Generic.List<System.Collections.Generic.List<string>> HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.EndGetFileListFromDB(System.IAsyncResult result) {
+            return base.Channel.EndGetFileListFromDB(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetFileListFromDB(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            string path = ((string)(inValues[0]));
+            System.Nullable<int> PID = ((System.Nullable<int>)(inValues[1]));
+            return ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).BeginGetFileListFromDB(path, PID, callback, asyncState);
+        }
+        
+        private object[] OnEndGetFileListFromDB(System.IAsyncResult result) {
+            System.Collections.Generic.List<System.Collections.Generic.List<string>> retVal = ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).EndGetFileListFromDB(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetFileListFromDBCompleted(object state) {
+            if ((this.GetFileListFromDBCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetFileListFromDBCompleted(this, new GetFileListFromDBCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetFileListFromDBAsync(string path, System.Nullable<int> PID) {
+            this.GetFileListFromDBAsync(path, PID, null);
+        }
+        
+        public void GetFileListFromDBAsync(string path, System.Nullable<int> PID, object userState) {
+            if ((this.onBeginGetFileListFromDBDelegate == null)) {
+                this.onBeginGetFileListFromDBDelegate = new BeginOperationDelegate(this.OnBeginGetFileListFromDB);
+            }
+            if ((this.onEndGetFileListFromDBDelegate == null)) {
+                this.onEndGetFileListFromDBDelegate = new EndOperationDelegate(this.OnEndGetFileListFromDB);
+            }
+            if ((this.onGetFileListFromDBCompletedDelegate == null)) {
+                this.onGetFileListFromDBCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetFileListFromDBCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetFileListFromDBDelegate, new object[] {
+                        path,
+                        PID}, this.onEndGetFileListFromDBDelegate, this.onGetFileListFromDBCompletedDelegate, userState);
         }
         
         private System.IAsyncResult OnBeginOpen(object[] inValues, System.AsyncCallback callback, object asyncState) {
@@ -549,7 +551,7 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
                     base(client) {
             }
             
-            public System.IAsyncResult BeginAddListToDB(System.Collections.ObjectModel.ObservableCollection<System.Collections.ObjectModel.ObservableCollection<string>> folders, System.AsyncCallback callback, object asyncState) {
+            public System.IAsyncResult BeginAddListToDB(System.Collections.Generic.List<System.Collections.Generic.List<string>> folders, System.AsyncCallback callback, object asyncState) {
                 object[] _args = new object[1];
                 _args[0] = folders;
                 System.IAsyncResult _result = base.BeginInvoke("AddListToDB", _args, callback, asyncState);
@@ -588,29 +590,30 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
                 return _result;
             }
             
-            public System.IAsyncResult BeginGetFileFromDB(System.Nullable<int> PID, System.AsyncCallback callback, object asyncState) {
-                object[] _args = new object[1];
-                _args[0] = PID;
-                System.IAsyncResult _result = base.BeginInvoke("GetFileFromDB", _args, callback, asyncState);
-                return _result;
-            }
-            
-            public string EndGetFileFromDB(System.IAsyncResult result) {
-                object[] _args = new object[0];
-                string _result = ((string)(base.EndInvoke("GetFileFromDB", _args, result)));
-                return _result;
-            }
-            
-            public System.IAsyncResult BeginGetDirFromDB(string path, System.AsyncCallback callback, object asyncState) {
+            public System.IAsyncResult BeginGetDirListFromDB(string path, System.AsyncCallback callback, object asyncState) {
                 object[] _args = new object[1];
                 _args[0] = path;
-                System.IAsyncResult _result = base.BeginInvoke("GetDirFromDB", _args, callback, asyncState);
+                System.IAsyncResult _result = base.BeginInvoke("GetDirListFromDB", _args, callback, asyncState);
                 return _result;
             }
             
-            public string EndGetDirFromDB(System.IAsyncResult result) {
+            public System.Collections.Generic.List<System.Collections.Generic.List<string>> EndGetDirListFromDB(System.IAsyncResult result) {
                 object[] _args = new object[0];
-                string _result = ((string)(base.EndInvoke("GetDirFromDB", _args, result)));
+                System.Collections.Generic.List<System.Collections.Generic.List<string>> _result = ((System.Collections.Generic.List<System.Collections.Generic.List<string>>)(base.EndInvoke("GetDirListFromDB", _args, result)));
+                return _result;
+            }
+            
+            public System.IAsyncResult BeginGetFileListFromDB(string path, System.Nullable<int> PID, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[2];
+                _args[0] = path;
+                _args[1] = PID;
+                System.IAsyncResult _result = base.BeginInvoke("GetFileListFromDB", _args, callback, asyncState);
+                return _result;
+            }
+            
+            public System.Collections.Generic.List<System.Collections.Generic.List<string>> EndGetFileListFromDB(System.IAsyncResult result) {
+                object[] _args = new object[0];
+                System.Collections.Generic.List<System.Collections.Generic.List<string>> _result = ((System.Collections.Generic.List<System.Collections.Generic.List<string>>)(base.EndInvoke("GetFileListFromDB", _args, result)));
                 return _result;
             }
         }

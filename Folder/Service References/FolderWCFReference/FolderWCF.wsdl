@@ -25,17 +25,17 @@
   <wsdl:message name="IFolderWCF_GetId_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetIdResponse" />
   </wsdl:message>
-  <wsdl:message name="IFolderWCF_GetFileFromDB_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetFileFromDB" />
+  <wsdl:message name="IFolderWCF_GetDirListFromDB_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDirListFromDB" />
   </wsdl:message>
-  <wsdl:message name="IFolderWCF_GetFileFromDB_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetFileFromDBResponse" />
+  <wsdl:message name="IFolderWCF_GetDirListFromDB_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDirListFromDBResponse" />
   </wsdl:message>
-  <wsdl:message name="IFolderWCF_GetDirFromDB_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetDirFromDB" />
+  <wsdl:message name="IFolderWCF_GetFileListFromDB_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetFileListFromDB" />
   </wsdl:message>
-  <wsdl:message name="IFolderWCF_GetDirFromDB_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetDirFromDBResponse" />
+  <wsdl:message name="IFolderWCF_GetFileListFromDB_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetFileListFromDBResponse" />
   </wsdl:message>
   <wsdl:portType name="IFolderWCF">
     <wsdl:operation name="AddListToDB">
@@ -50,13 +50,13 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IFolderWCF/GetId" message="tns:IFolderWCF_GetId_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IFolderWCF/GetIdResponse" message="tns:IFolderWCF_GetId_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="GetFileFromDB">
-      <wsdl:input wsaw:Action="http://tempuri.org/IFolderWCF/GetFileFromDB" message="tns:IFolderWCF_GetFileFromDB_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IFolderWCF/GetFileFromDBResponse" message="tns:IFolderWCF_GetFileFromDB_OutputMessage" />
+    <wsdl:operation name="GetDirListFromDB">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFolderWCF/GetDirListFromDB" message="tns:IFolderWCF_GetDirListFromDB_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFolderWCF/GetDirListFromDBResponse" message="tns:IFolderWCF_GetDirListFromDB_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="GetDirFromDB">
-      <wsdl:input wsaw:Action="http://tempuri.org/IFolderWCF/GetDirFromDB" message="tns:IFolderWCF_GetDirFromDB_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IFolderWCF/GetDirFromDBResponse" message="tns:IFolderWCF_GetDirFromDB_OutputMessage" />
+    <wsdl:operation name="GetFileListFromDB">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFolderWCF/GetFileListFromDB" message="tns:IFolderWCF_GetFileListFromDB_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFolderWCF/GetFileListFromDBResponse" message="tns:IFolderWCF_GetFileListFromDB_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IFolderWCF" type="tns:IFolderWCF">
@@ -88,8 +88,8 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="GetFileFromDB">
-      <soap:operation soapAction="http://tempuri.org/IFolderWCF/GetFileFromDB" style="document" />
+    <wsdl:operation name="GetDirListFromDB">
+      <soap:operation soapAction="http://tempuri.org/IFolderWCF/GetDirListFromDB" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -97,8 +97,8 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="GetDirFromDB">
-      <soap:operation soapAction="http://tempuri.org/IFolderWCF/GetDirFromDB" style="document" />
+    <wsdl:operation name="GetFileListFromDB">
+      <soap:operation soapAction="http://tempuri.org/IFolderWCF/GetFileListFromDB" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

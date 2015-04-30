@@ -101,23 +101,22 @@ namespace HuaweiSoftware.Folder
 
 		public int GetId()
 		{
+			int id;
+
 			sqlConn.Open();
 
 			SqlCommand sqlComm = new SqlCommand("SELECT MAX(Id) FROM FileTable", sqlConn);
-			SqlDataReader dr = sqlComm.ExecuteReader();
-
-			int id;
-
-			if (dr.Read())
+			using (SqlDataReader dr = sqlComm.ExecuteReader())
 			{
-				id = dr.GetInt32(0);
+				if (dr.Read())
+				{
+					id = dr.GetInt32(0);
+				}
+				else
+				{
+					id = 1;
+				}
 			}
-			else
-			{
-				id = 1;
-			}
-
-			dr.Close();
 
 			return id;
 		}
@@ -155,37 +154,93 @@ namespace HuaweiSoftware.Folder
 			return fileList;
 		}
 
-		public string GetDirFromDB(string path)
+		public List<List<string>> GetDirListFromDB(string path)
 		{
 			sqlConn.Open();
 
+			List<List<string>> folders = new List<List<string>>();
+
+			path = path.Replace('\\', '/');
+
+			// 剪去如同“D:/test/”中的最后那个"/"。
 			if (path.EndsWith("/"))
 			{
 				path = path.Substring(0, path.Length - 1);
 			}
 
 			SqlCommand sqlComm = new SqlCommand(string.Format("SELECT * FROM FileTable WHERE [Path] LIKE '{0}%' AND [Type] = 'dir'", path), sqlConn);
-			SqlDataReader dr = sqlComm.ExecuteReader();
-
-			string dirList = "";
-
-			int id;
-			string pid;
-			string fullName;
-			while (dr.Read())
+			using (SqlDataReader dr = sqlComm.ExecuteReader())
 			{
-				id = dr.GetInt32(1);
-				pid = dr.IsDBNull(2) ? "NULL" : dr.GetInt32(2).ToString();
-				fullName = dr.GetString(7) + "/" + dr.GetString(3);
+				int id;
+				string pid;
+				string fullName;
+				List<string> dir;		//临时变量
+				while (dr.Read())
+				{
+					dir = new List<string>();
+					id = dr.GetInt32(1);
+					pid = dr.IsDBNull(2) ? "NULL" : dr.GetInt32(2).ToString();
+					fullName = dr.GetString(7) + "/" + dr.GetString(3);
 
-				// 用“|”分隔元素
-				// 用“*”分隔行
-				dirList += string.Format("{0}|{1}|{2}", id, pid, fullName) + "*";
+					dir.Add(id.ToString());
+					dir.Add(pid);
+					dir.Add(fullName);
+
+					folders.Add(dir);
+				}
 			}
 
-			dr.Close();
+			return folders;
+		}
 
-			return dirList;
+		public List<List<string>> GetFileListFromDB(string path, int? PID = null)
+		{
+			sqlConn.Open();
+
+			List<List<string>> files = new List<List<string>>();
+
+			path = path.Replace('\\', '/');
+
+			// 剪去如同“D:/test/”中的最后那个"/"。
+			if (path.EndsWith("/"))
+			{
+				path = path.Substring(0, path.Length - 1);
+			}
+
+			string sqlCommandString = "SELECT * FROM FileTable";
+
+			if (PID.HasValue)
+			{
+				sqlCommandString = string.Format("SELECT * FROM FileTable WHERE [PID] = {0} AND [Type] LIKE '.%'", PID);
+			}
+			else
+			{
+				sqlCommandString = string.Format("SELECT * FROM FileTable WHERE [Path] = '{0}' AND [Type] LIKE '.%'", path);
+			}
+
+			SqlCommand sqlComm = new SqlCommand(sqlCommandString, sqlConn);
+			using (SqlDataReader dr = sqlComm.ExecuteReader())
+			{
+				int id;
+				string pid;
+				string fullName;
+				List<string> file;		//临时变量
+				while (dr.Read())
+				{
+					file = new List<string>();
+					id = dr.GetInt32(1);
+					pid = dr.IsDBNull(2) ? "NULL" : dr.GetInt32(2).ToString();
+					fullName = dr.GetString(7) + "/" + dr.GetString(3);
+
+					file.Add(id.ToString());
+					file.Add(pid);
+					file.Add(fullName);
+
+					files.Add(file);
+				}
+			}
+
+			return files;
 		}
 	}
 }

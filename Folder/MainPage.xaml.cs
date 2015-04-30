@@ -42,8 +42,6 @@ namespace HuaweiSoftware.Folder
 				dbOp.AddDirToList(dir, null);		//本目录下的子目录(包括文件)
 				dbOp.AddListToDB();					//保存到数据库
 
-				DataBaseOperator.Id++;		// 为了分隔开
-
 				SetEnabled(true);
 			}
 			catch (Exception ex)
@@ -72,16 +70,15 @@ namespace HuaweiSoftware.Folder
 			{
 				DirInfoWithID dir = dbOp.DirList[index];
 
-				dbOp.GetFileFromDB(dir.Id);
+				dbOp.GetFileListFromDB(dir.Info.FullName,dir.Id);
 				lst_File.ItemsSource = dbOp.FileList;
 
 				extensions.Clear();
 				extensions.Add("ALL");
 
-				foreach (string s in dbOp.FileList)
+				foreach (FileInfo file in dbOp.FileList)
 				{
-					MessageBox.Show(s.LastIndexOf('.').ToString(),s,MessageBoxButton.OK);
-					string fileExt = s.Substring(s.LastIndexOf('.'));	//后缀
+					string fileExt = file.Extension;		//后缀
 					if (!extensions.Contains(fileExt))
 					{
 						extensions.Add(fileExt);
@@ -90,9 +87,9 @@ namespace HuaweiSoftware.Folder
 			}
 		}
 
-		private void ddlst_Extension_SelectionChanged(object sender, SelectionChangedEventArgs e)
+ 		private void ddlst_Extension_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			ObservableCollection<string> files = dbOp.FileList;
+			ObservableCollection<FileInfo> files = dbOp.FileList;
 
 			if (ddlst_Extension.SelectedIndex > 0)
 			{
@@ -102,7 +99,7 @@ namespace HuaweiSoftware.Folder
 
 				foreach (var fileName in dbOp.FileList)
 				{
-					if (fileName.Substring(fileName.LastIndexOf('.')) == extension)
+					if (fileName.Extension == extension)
 					{
 						files.Add(fileName);
 					}
@@ -110,7 +107,7 @@ namespace HuaweiSoftware.Folder
 			}
 
 			lst_File.ItemsSource = files;
-		}
+ 		}
 
 		private void btn_Search_Click(object sender, RoutedEventArgs e)
 		{
@@ -118,13 +115,13 @@ namespace HuaweiSoftware.Folder
 
 			if (keyword != string.Empty)
 			{
-				ObservableCollection<string> files = new ObservableCollection<string>();
+				ObservableCollection<FileInfo> files = new ObservableCollection<FileInfo>();
 
-				foreach (var i in dbOp.FileList)
+				foreach (var file in dbOp.FileList)
 				{
-					if (i.ToLower().Contains(keyword))
+					if (file.Name.ToLower().Contains(keyword))
 					{
-						files.Add(i);
+						files.Add(file);
 					}
 				}
 
@@ -134,7 +131,7 @@ namespace HuaweiSoftware.Folder
 			{
 				ddlst_Extension.SelectedIndex = 0;
 			}
-		}
+ 		}
 
 		private void txt_Search_KeyDown(object sender, KeyEventArgs e)
 		{

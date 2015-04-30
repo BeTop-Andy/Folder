@@ -42,31 +42,32 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="GetFileFromDB">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="PID" nillable="true" type="xs:int" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="GetFileFromDBResponse">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="GetFileFromDBResult" nillable="true" type="xs:string" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="GetDirFromDB">
+  <xs:element name="GetDirListFromDB">
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="path" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="GetDirFromDBResponse">
+  <xs:element name="GetDirListFromDBResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="GetDirFromDBResult" nillable="true" type="xs:string" />
+        <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetDirListFromDBResult" nillable="true" type="q2:ArrayOfArrayOfstring" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetFileListFromDB">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="path" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="PID" nillable="true" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetFileListFromDBResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetFileListFromDBResult" nillable="true" type="q3:ArrayOfArrayOfstring" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
