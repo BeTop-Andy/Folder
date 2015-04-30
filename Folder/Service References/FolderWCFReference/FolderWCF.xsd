@@ -15,38 +15,9 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="Exists">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="path" nillable="true" type="xs:string" />
-        <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="ExistsResponse">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="ExistsResult" type="xs:boolean" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="GetId">
-    <xs:complexType>
-      <xs:sequence />
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="GetIdResponse">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="GetIdResult" type="xs:int" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
   <xs:element name="GetDirListFromDB">
     <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="path" nillable="true" type="xs:string" />
-      </xs:sequence>
+      <xs:sequence />
     </xs:complexType>
   </xs:element>
   <xs:element name="GetDirListFromDBResponse">
@@ -59,7 +30,6 @@
   <xs:element name="GetFileListFromDB">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="path" nillable="true" type="xs:string" />
         <xs:element minOccurs="0" name="PID" nillable="true" type="xs:int" />
       </xs:sequence>
     </xs:complexType>

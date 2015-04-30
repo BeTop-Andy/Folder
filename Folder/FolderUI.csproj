@@ -80,7 +80,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="DataBaseOperator.cs" />
-    <Compile Include="DirInfoWithID.cs" />
+    <Compile Include="DirWithID.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>

@@ -11,7 +11,7 @@ namespace HuaweiSoftware.Folder
 		private SqlConnection sqlConn = new SqlConnection(@"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\yesa\AppData\Local\Microsoft\VisualStudio\SSDT\filInfo.mdf;Integrated Security=True;Connect Timeout=30");
 
 		/// <summary>
-		/// 添加文件到数据库
+		/// 添加文件到数据库，插入之前先清空
 		/// </summary>
 		/// <param name="folders">两层的List.
 		/// 最里面那层有type,id,pid,fullname.
@@ -23,13 +23,19 @@ namespace HuaweiSoftware.Folder
 		public int AddListToDB(List<List<string>> folders)
 		{
 			sqlConn.Open();
+
+			//清空数据库
+			SqlCommand sqlComm = new SqlCommand("DELETE FROM FileTable", sqlConn);
+
+			sqlComm.ExecuteNonQuery();
+
 			int rowCount = 0;
 
 			string id;
 			string pid;
 			FileInfo file;
 			DirectoryInfo dir;
-			SqlCommand sqlComm = new SqlCommand();
+
 			foreach (List<string> l in folders)
 			{
 				id = l[1];
@@ -39,7 +45,7 @@ namespace HuaweiSoftware.Folder
 				{
 					file = new FileInfo(l[3]);
 
-					sqlComm = new SqlCommand(string.Format(@"INSERT INTO FileTable([Id],[PID],[Name],[Size],[Type],[CreateTime],[Path])VALUES({0},{1},'{2}',{3},'{4}','{5}','{6}')", id, pid, file.Name, file.Length, file.Extension, file.CreationTime.ToString("yyyy-MM-dd HH:mm:ss"), file.DirectoryName.Replace('\\', '/')), sqlConn);
+					sqlComm = new SqlCommand(string.Format(@"INSERT INTO FileTable([Id],[PID],[Name],[Size],[Type],[CreateTime])VALUES({0},{1},'{2}',{3},'{4}','{5}')", id, pid, file.Name, file.Length, file.Extension, file.CreationTime.ToString("yyyy-MM-dd HH:mm:ss")), sqlConn);
 				}
 				else if (l[0] == "folder")
 				{
@@ -47,7 +53,7 @@ namespace HuaweiSoftware.Folder
 
 					long size = GetDirSize(dir);
 
-					sqlComm = new SqlCommand(string.Format(@"INSERT INTO FileTable([Id],[PID],[Name],[Size],[Type],[CreateTime],[Path])VALUES({0},{1},'{2}',{3},'{4}','{5}','{6}')", id, pid, dir.Name, size, "dir", dir.CreationTime.ToString("yyyy-MM-dd HH:mm:ss"), dir.Parent.FullName.Replace('\\', '/')), sqlConn);
+					sqlComm = new SqlCommand(string.Format(@"INSERT INTO FileTable([Id],[PID],[Name],[Size],[Type],[CreateTime])VALUES({0},{1},'{2}',{3},'{4}','{5}')", id, pid, dir.Name, size, "dir", dir.CreationTime.ToString("yyyy-MM-dd HH:mm:ss")), sqlConn);
 				}
 				else
 				{
@@ -84,107 +90,30 @@ namespace HuaweiSoftware.Folder
 			return size;
 		}
 
-		public bool Exists(string path, string name)
-		{
-			sqlConn.Open();
-
-			SqlCommand sqlComm = new SqlCommand(string.Format("SELECT * FROM FileTable WHERE [Path] = '{0}' AND [Name] = '{1}'", path, name), sqlConn);
-
-			SqlDataReader dr = sqlComm.ExecuteReader();
-
-			bool isExists = dr.HasRows;
-
-			dr.Close();
-
-			return isExists;
-		}
-
-		public int GetId()
-		{
-			int id;
-
-			sqlConn.Open();
-
-			SqlCommand sqlComm = new SqlCommand("SELECT MAX(Id) FROM FileTable", sqlConn);
-			using (SqlDataReader dr = sqlComm.ExecuteReader())
-			{
-				if (dr.Read())
-				{
-					id = dr.GetInt32(0);
-				}
-				else
-				{
-					id = 1;
-				}
-			}
-
-			return id;
-		}
-
-		public string GetFileFromDB(int? PID)
-		{
-			sqlConn.Open();
-
-			string sqlCommandString;
-
-			if (PID.HasValue)
-			{
-				sqlCommandString = string.Format("SELECT * FROM FileTable WHERE [PID] = {0} AND [Type] like '.%'", PID);
-			}
-			else
-			{
-				sqlCommandString = string.Format("SELECT * FROM FileTable WHERE [PID] IS NULL AND [Type] like '.%'", PID);
-			}
-
-			SqlCommand sqlComm = new SqlCommand(sqlCommandString, sqlConn);
-			SqlDataReader dr = sqlComm.ExecuteReader();
-
-			string fileList = "";
-
-			string fileName;
-			while (dr.Read())
-			{
-				fileName = dr.GetString(3);
-
-				fileList += fileName + "*";
-			}
-
-			dr.Close();
-
-			return fileList;
-		}
-
-		public List<List<string>> GetDirListFromDB(string path)
+		public List<List<string>> GetDirListFromDB()
 		{
 			sqlConn.Open();
 
 			List<List<string>> folders = new List<List<string>>();
 
-			path = path.Replace('\\', '/');
+			SqlCommand sqlComm = new SqlCommand("SELECT * FROM FileTable WHERE [Type] = 'dir'", sqlConn);
 
-			// 剪去如同“D:/test/”中的最后那个"/"。
-			if (path.EndsWith("/"))
-			{
-				path = path.Substring(0, path.Length - 1);
-			}
-
-			SqlCommand sqlComm = new SqlCommand(string.Format("SELECT * FROM FileTable WHERE [Path] LIKE '{0}%' AND [Type] = 'dir'", path), sqlConn);
 			using (SqlDataReader dr = sqlComm.ExecuteReader())
 			{
 				int id;
 				string pid;
-				string fullName;
+				string name;
 				List<string> dir;		//临时变量
 				while (dr.Read())
 				{
 					dir = new List<string>();
 					id = dr.GetInt32(1);
 					pid = dr.IsDBNull(2) ? "NULL" : dr.GetInt32(2).ToString();
-					fullName = dr.GetString(7) + "/" + dr.GetString(3);
+					name = dr.GetString(3);
 
 					dir.Add(id.ToString());
 					dir.Add(pid);
-					dir.Add(fullName);
+					dir.Add(name);
 
 					folders.Add(dir);
 				}
@@ -193,19 +122,11 @@ namespace HuaweiSoftware.Folder
 			return folders;
 		}
 
-		public List<List<string>> GetFileListFromDB(string path, int? PID = null)
+		public List<List<string>> GetFileListFromDB(int? PID = null)
 		{
 			sqlConn.Open();
 
 			List<List<string>> files = new List<List<string>>();
-
-			path = path.Replace('\\', '/');
-
-			// 剪去如同“D:/test/”中的最后那个"/"。
-			if (path.EndsWith("/"))
-			{
-				path = path.Substring(0, path.Length - 1);
-			}
 
 			string sqlCommandString = "SELECT * FROM FileTable";
 
@@ -215,7 +136,7 @@ namespace HuaweiSoftware.Folder
 			}
 			else
 			{
-				sqlCommandString = string.Format("SELECT * FROM FileTable WHERE [Path] = '{0}' AND [Type] LIKE '.%'", path);
+				sqlCommandString = "SELECT * FROM FileTable WHERE [PID] IS NULL AND [Type] LIKE '.%'";
 			}
 
 			SqlCommand sqlComm = new SqlCommand(sqlCommandString, sqlConn);
@@ -223,18 +144,18 @@ namespace HuaweiSoftware.Folder
 			{
 				int id;
 				string pid;
-				string fullName;
+				string name;
 				List<string> file;		//临时变量
 				while (dr.Read())
 				{
 					file = new List<string>();
 					id = dr.GetInt32(1);
 					pid = dr.IsDBNull(2) ? "NULL" : dr.GetInt32(2).ToString();
-					fullName = dr.GetString(7) + "/" + dr.GetString(3);
+					name = dr.GetString(3);
 
 					file.Add(id.ToString());
 					file.Add(pid);
-					file.Add(fullName);
+					file.Add(name);
 
 					files.Add(file);
 				}

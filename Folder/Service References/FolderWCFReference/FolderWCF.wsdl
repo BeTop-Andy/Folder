@@ -21,18 +21,6 @@
   <wsdl:message name="IFolderWCF_AddListToDB_OutputMessage">
     <wsdl:part name="parameters" element="tns:AddListToDBResponse" />
   </wsdl:message>
-  <wsdl:message name="IFolderWCF_Exists_InputMessage">
-    <wsdl:part name="parameters" element="tns:Exists" />
-  </wsdl:message>
-  <wsdl:message name="IFolderWCF_Exists_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ExistsResponse" />
-  </wsdl:message>
-  <wsdl:message name="IFolderWCF_GetId_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetId" />
-  </wsdl:message>
-  <wsdl:message name="IFolderWCF_GetId_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetIdResponse" />
-  </wsdl:message>
   <wsdl:message name="IFolderWCF_GetDirListFromDB_InputMessage">
     <wsdl:part name="parameters" element="tns:GetDirListFromDB" />
   </wsdl:message>
@@ -50,14 +38,6 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IFolderWCF/AddListToDB" message="tns:IFolderWCF_AddListToDB_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IFolderWCF/AddListToDBResponse" message="tns:IFolderWCF_AddListToDB_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="Exists">
-      <wsdl:input wsaw:Action="http://tempuri.org/IFolderWCF/Exists" message="tns:IFolderWCF_Exists_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IFolderWCF/ExistsResponse" message="tns:IFolderWCF_Exists_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="GetId">
-      <wsdl:input wsaw:Action="http://tempuri.org/IFolderWCF/GetId" message="tns:IFolderWCF_GetId_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IFolderWCF/GetIdResponse" message="tns:IFolderWCF_GetId_OutputMessage" />
-    </wsdl:operation>
     <wsdl:operation name="GetDirListFromDB">
       <wsdl:input wsaw:Action="http://tempuri.org/IFolderWCF/GetDirListFromDB" message="tns:IFolderWCF_GetDirListFromDB_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IFolderWCF/GetDirListFromDBResponse" message="tns:IFolderWCF_GetDirListFromDB_OutputMessage" />
@@ -72,24 +52,6 @@
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="AddListToDB">
       <soap12:operation soapAction="http://tempuri.org/IFolderWCF/AddListToDB" style="document" />
-      <wsdl:input>
-        <soap12:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap12:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="Exists">
-      <soap12:operation soapAction="http://tempuri.org/IFolderWCF/Exists" style="document" />
-      <wsdl:input>
-        <soap12:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap12:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetId">
-      <soap12:operation soapAction="http://tempuri.org/IFolderWCF/GetId" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

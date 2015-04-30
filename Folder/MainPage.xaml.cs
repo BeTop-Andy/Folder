@@ -29,12 +29,20 @@ namespace HuaweiSoftware.Folder
 
 		private void btn_Save_Click(object sender, RoutedEventArgs e)
 		{
+			lst_Folder.ItemsSource = null;
+			lst_File.ItemsSource = null;
+
 			try
 			{
 				string pathStr = txt_Path.Text;
-				pathStr = pathStr.Replace('\\', '/');
+
+				if (!CheckPath(pathStr))
+				{
+					throw new Exception("路径不合法");
+				}
 
 				DirectoryInfo dir = new DirectoryInfo(pathStr);
+				//MessageBox.Show(dir.FullName);
 
 				//分4步保存到数据库
 				dbOp.ClearDBList();					//先清空列表
@@ -55,6 +63,16 @@ namespace HuaweiSoftware.Folder
 			}
 		}
 
+		private bool CheckPath(string path)
+		{
+			if (path.EndsWith(":") || path.EndsWith(":\\") || path.EndsWith(":/"))
+			{
+				return false;
+			}
+
+			return true;
+		}
+
 		private void SetEnabled(bool b)
 		{
 			txt_Search.IsEnabled = b;
@@ -68,9 +86,9 @@ namespace HuaweiSoftware.Folder
 
 			if (index >= 0)
 			{
-				DirInfoWithID dir = dbOp.DirList[index];
+				DirNameWithID dir = dbOp.DirList[index];
 
-				dbOp.GetFileListFromDB(dir.Info.FullName,dir.Id);
+				dbOp.GetFileListFromDB(dir.Id);
 				lst_File.ItemsSource = dbOp.FileList;
 
 				extensions.Clear();
@@ -163,20 +181,7 @@ namespace HuaweiSoftware.Folder
 			}
 			else
 			{
-				try
-				{
-					string path = txt_Path.Text;
-					if (!Directory.Exists(path))
-					{
-						throw new Exception("目录不存在");
-					}
-					path = path.Replace('\\', '/');
-					dbOp.GetDirFromDB(path);
-				}
-				catch (Exception ex)
-				{
-					MessageBox.Show(ex.Message);
-				}
+				dbOp.GetDirFromDB();
 			}
 		}
 	}

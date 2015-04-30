@@ -23,23 +23,13 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
         
         int EndAddListToDB(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IFolderWCF/Exists", ReplyAction="http://tempuri.org/IFolderWCF/ExistsResponse")]
-        System.IAsyncResult BeginExists(string path, string name, System.AsyncCallback callback, object asyncState);
-        
-        bool EndExists(System.IAsyncResult result);
-        
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IFolderWCF/GetId", ReplyAction="http://tempuri.org/IFolderWCF/GetIdResponse")]
-        System.IAsyncResult BeginGetId(System.AsyncCallback callback, object asyncState);
-        
-        int EndGetId(System.IAsyncResult result);
-        
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IFolderWCF/GetDirListFromDB", ReplyAction="http://tempuri.org/IFolderWCF/GetDirListFromDBResponse")]
-        System.IAsyncResult BeginGetDirListFromDB(string path, System.AsyncCallback callback, object asyncState);
+        System.IAsyncResult BeginGetDirListFromDB(System.AsyncCallback callback, object asyncState);
         
         System.Collections.Generic.List<System.Collections.Generic.List<string>> EndGetDirListFromDB(System.IAsyncResult result);
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IFolderWCF/GetFileListFromDB", ReplyAction="http://tempuri.org/IFolderWCF/GetFileListFromDBResponse")]
-        System.IAsyncResult BeginGetFileListFromDB(string path, System.Nullable<int> PID, System.AsyncCallback callback, object asyncState);
+        System.IAsyncResult BeginGetFileListFromDB(System.Nullable<int> PID, System.AsyncCallback callback, object asyncState);
         
         System.Collections.Generic.List<System.Collections.Generic.List<string>> EndGetFileListFromDB(System.IAsyncResult result);
     }
@@ -55,44 +45,6 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
         private object[] results;
         
         public AddListToDBCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        public int Result {
-            get {
-                base.RaiseExceptionIfNecessary();
-                return ((int)(this.results[0]));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class ExistsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        public ExistsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        public bool Result {
-            get {
-                base.RaiseExceptionIfNecessary();
-                return ((bool)(this.results[0]));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class GetIdCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        public GetIdCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -152,18 +104,6 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
         private EndOperationDelegate onEndAddListToDBDelegate;
         
         private System.Threading.SendOrPostCallback onAddListToDBCompletedDelegate;
-        
-        private BeginOperationDelegate onBeginExistsDelegate;
-        
-        private EndOperationDelegate onEndExistsDelegate;
-        
-        private System.Threading.SendOrPostCallback onExistsCompletedDelegate;
-        
-        private BeginOperationDelegate onBeginGetIdDelegate;
-        
-        private EndOperationDelegate onEndGetIdDelegate;
-        
-        private System.Threading.SendOrPostCallback onGetIdCompletedDelegate;
         
         private BeginOperationDelegate onBeginGetDirListFromDBDelegate;
         
@@ -231,10 +171,6 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
         
         public event System.EventHandler<AddListToDBCompletedEventArgs> AddListToDBCompleted;
         
-        public event System.EventHandler<ExistsCompletedEventArgs> ExistsCompleted;
-        
-        public event System.EventHandler<GetIdCompletedEventArgs> GetIdCompleted;
-        
         public event System.EventHandler<GetDirListFromDBCompletedEventArgs> GetDirListFromDBCompleted;
         
         public event System.EventHandler<GetFileListFromDBCompletedEventArgs> GetFileListFromDBCompleted;
@@ -290,100 +226,8 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.IAsyncResult HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.BeginExists(string path, string name, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginExists(path, name, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        bool HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.EndExists(System.IAsyncResult result) {
-            return base.Channel.EndExists(result);
-        }
-        
-        private System.IAsyncResult OnBeginExists(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            string path = ((string)(inValues[0]));
-            string name = ((string)(inValues[1]));
-            return ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).BeginExists(path, name, callback, asyncState);
-        }
-        
-        private object[] OnEndExists(System.IAsyncResult result) {
-            bool retVal = ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).EndExists(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnExistsCompleted(object state) {
-            if ((this.ExistsCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.ExistsCompleted(this, new ExistsCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void ExistsAsync(string path, string name) {
-            this.ExistsAsync(path, name, null);
-        }
-        
-        public void ExistsAsync(string path, string name, object userState) {
-            if ((this.onBeginExistsDelegate == null)) {
-                this.onBeginExistsDelegate = new BeginOperationDelegate(this.OnBeginExists);
-            }
-            if ((this.onEndExistsDelegate == null)) {
-                this.onEndExistsDelegate = new EndOperationDelegate(this.OnEndExists);
-            }
-            if ((this.onExistsCompletedDelegate == null)) {
-                this.onExistsCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnExistsCompleted);
-            }
-            base.InvokeAsync(this.onBeginExistsDelegate, new object[] {
-                        path,
-                        name}, this.onEndExistsDelegate, this.onExistsCompletedDelegate, userState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.IAsyncResult HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.BeginGetId(System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetId(callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        int HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.EndGetId(System.IAsyncResult result) {
-            return base.Channel.EndGetId(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetId(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            return ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).BeginGetId(callback, asyncState);
-        }
-        
-        private object[] OnEndGetId(System.IAsyncResult result) {
-            int retVal = ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).EndGetId(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetIdCompleted(object state) {
-            if ((this.GetIdCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetIdCompleted(this, new GetIdCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetIdAsync() {
-            this.GetIdAsync(null);
-        }
-        
-        public void GetIdAsync(object userState) {
-            if ((this.onBeginGetIdDelegate == null)) {
-                this.onBeginGetIdDelegate = new BeginOperationDelegate(this.OnBeginGetId);
-            }
-            if ((this.onEndGetIdDelegate == null)) {
-                this.onEndGetIdDelegate = new EndOperationDelegate(this.OnEndGetId);
-            }
-            if ((this.onGetIdCompletedDelegate == null)) {
-                this.onGetIdCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetIdCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetIdDelegate, null, this.onEndGetIdDelegate, this.onGetIdCompletedDelegate, userState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.IAsyncResult HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.BeginGetDirListFromDB(string path, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetDirListFromDB(path, callback, asyncState);
+        System.IAsyncResult HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.BeginGetDirListFromDB(System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetDirListFromDB(callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -392,8 +236,7 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
         }
         
         private System.IAsyncResult OnBeginGetDirListFromDB(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            string path = ((string)(inValues[0]));
-            return ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).BeginGetDirListFromDB(path, callback, asyncState);
+            return ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).BeginGetDirListFromDB(callback, asyncState);
         }
         
         private object[] OnEndGetDirListFromDB(System.IAsyncResult result) {
@@ -409,11 +252,11 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
             }
         }
         
-        public void GetDirListFromDBAsync(string path) {
-            this.GetDirListFromDBAsync(path, null);
+        public void GetDirListFromDBAsync() {
+            this.GetDirListFromDBAsync(null);
         }
         
-        public void GetDirListFromDBAsync(string path, object userState) {
+        public void GetDirListFromDBAsync(object userState) {
             if ((this.onBeginGetDirListFromDBDelegate == null)) {
                 this.onBeginGetDirListFromDBDelegate = new BeginOperationDelegate(this.OnBeginGetDirListFromDB);
             }
@@ -423,13 +266,12 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
             if ((this.onGetDirListFromDBCompletedDelegate == null)) {
                 this.onGetDirListFromDBCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetDirListFromDBCompleted);
             }
-            base.InvokeAsync(this.onBeginGetDirListFromDBDelegate, new object[] {
-                        path}, this.onEndGetDirListFromDBDelegate, this.onGetDirListFromDBCompletedDelegate, userState);
+            base.InvokeAsync(this.onBeginGetDirListFromDBDelegate, null, this.onEndGetDirListFromDBDelegate, this.onGetDirListFromDBCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.IAsyncResult HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.BeginGetFileListFromDB(string path, System.Nullable<int> PID, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetFileListFromDB(path, PID, callback, asyncState);
+        System.IAsyncResult HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF.BeginGetFileListFromDB(System.Nullable<int> PID, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetFileListFromDB(PID, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -438,9 +280,8 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
         }
         
         private System.IAsyncResult OnBeginGetFileListFromDB(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            string path = ((string)(inValues[0]));
-            System.Nullable<int> PID = ((System.Nullable<int>)(inValues[1]));
-            return ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).BeginGetFileListFromDB(path, PID, callback, asyncState);
+            System.Nullable<int> PID = ((System.Nullable<int>)(inValues[0]));
+            return ((HuaweiSoftware.Folder.FolderWCFReference.IFolderWCF)(this)).BeginGetFileListFromDB(PID, callback, asyncState);
         }
         
         private object[] OnEndGetFileListFromDB(System.IAsyncResult result) {
@@ -456,11 +297,11 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
             }
         }
         
-        public void GetFileListFromDBAsync(string path, System.Nullable<int> PID) {
-            this.GetFileListFromDBAsync(path, PID, null);
+        public void GetFileListFromDBAsync(System.Nullable<int> PID) {
+            this.GetFileListFromDBAsync(PID, null);
         }
         
-        public void GetFileListFromDBAsync(string path, System.Nullable<int> PID, object userState) {
+        public void GetFileListFromDBAsync(System.Nullable<int> PID, object userState) {
             if ((this.onBeginGetFileListFromDBDelegate == null)) {
                 this.onBeginGetFileListFromDBDelegate = new BeginOperationDelegate(this.OnBeginGetFileListFromDB);
             }
@@ -471,7 +312,6 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
                 this.onGetFileListFromDBCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetFileListFromDBCompleted);
             }
             base.InvokeAsync(this.onBeginGetFileListFromDBDelegate, new object[] {
-                        path,
                         PID}, this.onEndGetFileListFromDBDelegate, this.onGetFileListFromDBCompletedDelegate, userState);
         }
         
@@ -564,35 +404,8 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
                 return _result;
             }
             
-            public System.IAsyncResult BeginExists(string path, string name, System.AsyncCallback callback, object asyncState) {
-                object[] _args = new object[2];
-                _args[0] = path;
-                _args[1] = name;
-                System.IAsyncResult _result = base.BeginInvoke("Exists", _args, callback, asyncState);
-                return _result;
-            }
-            
-            public bool EndExists(System.IAsyncResult result) {
+            public System.IAsyncResult BeginGetDirListFromDB(System.AsyncCallback callback, object asyncState) {
                 object[] _args = new object[0];
-                bool _result = ((bool)(base.EndInvoke("Exists", _args, result)));
-                return _result;
-            }
-            
-            public System.IAsyncResult BeginGetId(System.AsyncCallback callback, object asyncState) {
-                object[] _args = new object[0];
-                System.IAsyncResult _result = base.BeginInvoke("GetId", _args, callback, asyncState);
-                return _result;
-            }
-            
-            public int EndGetId(System.IAsyncResult result) {
-                object[] _args = new object[0];
-                int _result = ((int)(base.EndInvoke("GetId", _args, result)));
-                return _result;
-            }
-            
-            public System.IAsyncResult BeginGetDirListFromDB(string path, System.AsyncCallback callback, object asyncState) {
-                object[] _args = new object[1];
-                _args[0] = path;
                 System.IAsyncResult _result = base.BeginInvoke("GetDirListFromDB", _args, callback, asyncState);
                 return _result;
             }
@@ -603,10 +416,9 @@ namespace HuaweiSoftware.Folder.FolderWCFReference {
                 return _result;
             }
             
-            public System.IAsyncResult BeginGetFileListFromDB(string path, System.Nullable<int> PID, System.AsyncCallback callback, object asyncState) {
-                object[] _args = new object[2];
-                _args[0] = path;
-                _args[1] = PID;
+            public System.IAsyncResult BeginGetFileListFromDB(System.Nullable<int> PID, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[1];
+                _args[0] = PID;
                 System.IAsyncResult _result = base.BeginInvoke("GetFileListFromDB", _args, callback, asyncState);
                 return _result;
             }

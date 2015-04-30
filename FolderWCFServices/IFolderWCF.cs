@@ -16,15 +16,9 @@ namespace HuaweiSoftware.Folder
 		int AddListToDB(List<List<string>> folders);
 
 		[OperationContract]
-		bool Exists(string path, string name);
+		List<List<string>> GetDirListFromDB();
 
 		[OperationContract]
-		int GetId();
-
-		[OperationContract]
-		List<List<string>> GetDirListFromDB(string path);
-
-		[OperationContract]
-		List<List<string>> GetFileListFromDB(string path, int? PID);
+		List<List<string>> GetFileListFromDB(int? PID);
 	}
 }
