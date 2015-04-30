@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using HuaweiSoftware.Folder.FolderWCFReference;
-
 
 namespace HuaweiSoftware.Folder
 {
@@ -42,13 +39,12 @@ namespace HuaweiSoftware.Folder
 				}
 
 				DirectoryInfo dir = new DirectoryInfo(pathStr);
-				//MessageBox.Show(dir.FullName);
 
-				//分4步保存到数据库
-				dbOp.ClearDBList();					//先清空列表
-				dbOp.AddFileToList(dir, null);		//本目录下的文件
-				dbOp.AddDirToList(dir, null);		//本目录下的子目录(包括文件)
-				dbOp.AddListToDB();					//保存到数据库
+				// 分4步保存到数据库
+				dbOp.ClearDBList();					// 先清空列表
+				dbOp.AddFileToList(dir, null);		// 本目录下的文件
+				dbOp.AddDirToList(dir, null);		// 本目录下的子目录(包括文件)
+				dbOp.AddListToDB();					// 保存到数据库
 			}
 			catch (Exception ex)
 			{
@@ -62,7 +58,7 @@ namespace HuaweiSoftware.Folder
 		}
 
 		/// <summary>
-		/// 检查路径是否以“：”结尾
+		/// 检查路径是否以":"或":\"或":/"结尾
 		/// </summary>
 		/// <param name="path">路径</param>
 		/// <returns></returns>
@@ -76,6 +72,10 @@ namespace HuaweiSoftware.Folder
 			return true;
 		}
 
+		/// <summary>
+		/// 设置那3个控件的enabled
+		/// </summary>
+		/// <param name="b"></param>
 		private void SetEnabled(bool b)
 		{
 			txt_Search.IsEnabled = b;
@@ -100,8 +100,10 @@ namespace HuaweiSoftware.Folder
 
  		private void ddlst_Extension_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
+			// 临时集合
 			ObservableCollection<FileInfo> files = new ObservableCollection<FileInfo>();
 
+			// 选择后缀
 			if (ddlst_Extension.SelectedIndex > 0)
 			{
 				string extension = ddlst_Extension.SelectedValue.ToString();
@@ -155,18 +157,11 @@ namespace HuaweiSoftware.Folder
 			btn_Search_Click(null, null);
 		}
 
-		private void txt_Path_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.Key == Key.Enter)
-			{
-				btn_Save_Click(null, null);
-			}
-		}
-
 		private void btn_Load_Click(object sender, RoutedEventArgs e)
 		{
-			dbOp.GetDirFromDB();
-			dbOp.onLoadDirFinish += new EventHandler(LoadDirFinish);
+			dbOp.GetDirFromDB();		// 从目录中读取
+
+			dbOp.onLoadDirFinish += new EventHandler(LoadDirFinish);	// 订阅事件
 		}
 
 		/// <summary>
@@ -180,6 +175,11 @@ namespace HuaweiSoftware.Folder
 			SetEnabled(true);
 		}
 
+		/// <summary>
+		/// 读取完成，绑定数据源，添加后缀到选择后缀下拉框
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void LoadFileFinish(object sender, EventArgs e)
 		{
 			lst_File.ItemsSource = dbOp.FileList;
@@ -189,7 +189,7 @@ namespace HuaweiSoftware.Folder
 
 			foreach (FileInfo file in dbOp.FileList)
 			{
-				string fileExt = file.Extension;		//后缀
+				string fileExt = file.Extension;		// 后缀
 				if (!extensions.Contains(fileExt))
 				{
 					extensions.Add(fileExt);

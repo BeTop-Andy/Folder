@@ -1,7 +1,4 @@
-﻿using System.IO;
-using System.Runtime.Serialization;
-
-namespace HuaweiSoftware.Folder
+﻿namespace HuaweiSoftware.Folder
 {
 	public class DirNameWithID
 	{
@@ -41,12 +38,14 @@ namespace HuaweiSoftware.Folder
 		public override string ToString()
 		{
 			string pre = "";
+
+			// 构造前缀
 			for (int i = 0; i < Level; i++)
 			{
 				pre += "/ ";
 			}
 
-			return pre+Name;
+			return pre + Name;
 		}
 	}
 }

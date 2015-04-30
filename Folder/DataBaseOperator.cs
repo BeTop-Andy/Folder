@@ -12,10 +12,12 @@ namespace HuaweiSoftware.Folder
 	{
 		static private FolderWCFClient webClient;
 
-		static private int id;
+		static private int id;		// 每一个文件（夹）标识
 
+		//存放从数据库中读取的数据
 		private List<List<string>> folders;
 
+		//存放处理后的数据
 		public ObservableCollection<FileInfo> FileList
 		{
 			get;
@@ -28,8 +30,8 @@ namespace HuaweiSoftware.Folder
 			set;
 		}
 
-		public event EventHandler onLoadDirFinish;		//触发读取目录完成事件
-		public event EventHandler onLoadFileFinish;		//触发读取文件完成事件
+		public event EventHandler onLoadDirFinish;		// 触发读取目录完成事件
+		public event EventHandler onLoadFileFinish;		// 触发读取文件完成事件
 
 		public DataBaseOperator()
 		{
@@ -37,7 +39,7 @@ namespace HuaweiSoftware.Folder
 
 			id = 1;
 
-			FileList = new ObservableCollection<FileInfo>();
+			FileList = new ObservableCollection<FileInfo>();		
 			DirList = new ObservableCollection<DirNameWithID>();
 			folders = new List<List<string>>();
 		}
@@ -56,7 +58,7 @@ namespace HuaweiSoftware.Folder
 			{
 				int tmp_id = id;
 
-				folder = new List<string>();		//临时变量
+				folder = new List<string>();		// 临时变量
 				folder.Add("folder");
 				folder.Add(id.ToString());
 				folder.Add(pid.HasValue ? pid.Value.ToString() : "NULL");
@@ -83,7 +85,7 @@ namespace HuaweiSoftware.Folder
 
 			foreach (FileInfo fi in files)
 			{
-				file = new List<string>();		//临时变量
+				file = new List<string>();		// 临时变量
 				file.Add("file");
 				file.Add(id.ToString());
 				file.Add(pid.HasValue ? pid.Value.ToString() : "NULL");
@@ -94,6 +96,9 @@ namespace HuaweiSoftware.Folder
 			}
 		}
 
+		/// <summary>
+		/// 上传到数据库
+		/// </summary>
 		public void AddListToDB()
 		{
 			webClient.AddListToDBCompleted -= new EventHandler<AddListToDBCompletedEventArgs>(AddListToDBCompleted);
