@@ -8,7 +8,7 @@ namespace HuaweiSoftware.Folder
 	// 注意: 为了启动 WCF 测试客户端以测试此服务，请在解决方案资源管理器中选择 FolderWCF.svc 或 FolderWCF.svc.cs，然后开始调试。
 	public class FolderWCF : IFolderWCF
 	{
-		private SqlConnection sqlConn = new SqlConnection(@"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\yesa\AppData\Local\Microsoft\VisualStudio\SSDT\filInfo.mdf;Integrated Security=True;Connect Timeout=30");
+		private SqlConnection sqlConn = new SqlConnection(@"Data Source=CWJSJ-1403-007;Initial Catalog=FoldersDB;Persist Security Info=True;User ID=sa;Password=123456");
 
 		/// <summary>
 		/// 添加文件到数据库，插入之前先清空
@@ -20,11 +20,11 @@ namespace HuaweiSoftware.Folder
 		/// pid;
 		/// fullname:带路径的文件(夹)名</param>
 		/// <returns>受影响的行数</returns>
-		public int AddListToDB(List<List<string>> folders)
+		public int SaveData(List<List<string>> folders)
 		{
 			sqlConn.Open();
 
-			//清空数据库
+			// 清空数据库
 			SqlCommand sqlComm = new SqlCommand("DELETE FROM FileTable", sqlConn);
 
 			sqlComm.ExecuteNonQuery();
@@ -90,7 +90,7 @@ namespace HuaweiSoftware.Folder
 			return size;
 		}
 
-		public List<List<string>> GetDirListFromDB()
+		public List<List<string>> GetAllFolders()
 		{
 			sqlConn.Open();
 
@@ -103,7 +103,7 @@ namespace HuaweiSoftware.Folder
 				int id;
 				string pid;
 				string name;
-				List<string> dir;		//临时变量
+				List<string> dir;		// 临时变量
 				while (dr.Read())
 				{
 					dir = new List<string>();
@@ -122,7 +122,7 @@ namespace HuaweiSoftware.Folder
 			return folders;
 		}
 
-		public List<List<string>> GetFileListFromDB(int? PID = null)
+		public List<List<string>> GetFiles(int? PID = null)
 		{
 			sqlConn.Open();
 
@@ -145,7 +145,7 @@ namespace HuaweiSoftware.Folder
 				int id;
 				string pid;
 				string name;
-				List<string> file;		//临时变量
+				List<string> file;		// 临时变量
 				while (dr.Read())
 				{
 					file = new List<string>();

@@ -44,7 +44,7 @@ namespace HuaweiSoftware.Folder
 				dbOp.ClearDBList();					// 先清空列表
 				dbOp.AddFileToList(dir, null);		// 本目录下的文件
 				dbOp.AddDirToList(dir, null);		// 本目录下的子目录(包括文件)
-				dbOp.AddListToDB();					// 保存到数据库
+				dbOp.SavaData();					// 保存到数据库
 			}
 			catch (Exception ex)
 			{
@@ -91,7 +91,7 @@ namespace HuaweiSoftware.Folder
 			{
 				DirNameWithID dir = dbOp.DirList[index];
 
-				dbOp.GetFileListFromDB(dir.Id);
+				dbOp.GetFiles(dir.Id);
 
 				dbOp.onLoadFileFinish -= new EventHandler(LoadFileFinish);
 				dbOp.onLoadFileFinish += new EventHandler(LoadFileFinish);
@@ -159,7 +159,7 @@ namespace HuaweiSoftware.Folder
 
 		private void btn_Load_Click(object sender, RoutedEventArgs e)
 		{
-			dbOp.GetDirFromDB();		// 从目录中读取
+			dbOp.GetAllFolders();		// 从目录中读取
 
 			dbOp.onLoadDirFinish += new EventHandler(LoadDirFinish);	// 订阅事件
 		}

@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import schemaLocation="http://localhost:61020/FolderWCF.svc?xsd=xsd2" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-  <xs:element name="AddListToDB">
+  <xs:element name="SaveData">
     <xs:complexType>
       <xs:sequence>
         <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="folders" nillable="true" type="q1:ArrayOfArrayOfstring" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="AddListToDBResponse">
+  <xs:element name="SaveDataResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="AddListToDBResult" type="xs:int" />
+        <xs:element minOccurs="0" name="SaveDataResult" type="xs:int" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="GetDirListFromDB">
+  <xs:element name="GetAllFolders">
     <xs:complexType>
       <xs:sequence />
     </xs:complexType>
   </xs:element>
-  <xs:element name="GetDirListFromDBResponse">
+  <xs:element name="GetAllFoldersResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetDirListFromDBResult" nillable="true" type="q2:ArrayOfArrayOfstring" />
+        <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetAllFoldersResult" nillable="true" type="q2:ArrayOfArrayOfstring" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="GetFileListFromDB">
+  <xs:element name="GetFiles">
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="PID" nillable="true" type="xs:int" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="GetFileListFromDBResponse">
+  <xs:element name="GetFilesResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetFileListFromDBResult" nillable="true" type="q3:ArrayOfArrayOfstring" />
+        <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetFilesResult" nillable="true" type="q3:ArrayOfArrayOfstring" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

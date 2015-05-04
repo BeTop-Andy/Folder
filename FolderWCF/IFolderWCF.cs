@@ -13,12 +13,12 @@ namespace HuaweiSoftware.Folder
 	public interface IFolderWCF
 	{
 		[OperationContract]
-		int AddListToDB(List<List<string>> folders);
+		int SaveData(List<List<string>> folders);
 
 		[OperationContract]
-		List<List<string>> GetDirListFromDB();
+		List<List<string>> GetAllFolders();
 
 		[OperationContract]
-		List<List<string>> GetFileListFromDB(int? PID);
+		List<List<string>> GetFiles(int? PID);
 	}
 }

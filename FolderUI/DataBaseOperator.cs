@@ -99,15 +99,15 @@ namespace HuaweiSoftware.Folder
 		/// <summary>
 		/// 上传到数据库
 		/// </summary>
-		public void AddListToDB()
+		public void SavaData()
 		{
-			webClient.AddListToDBCompleted -= new EventHandler<AddListToDBCompletedEventArgs>(AddListToDBCompleted);
-			webClient.AddListToDBCompleted += new EventHandler<AddListToDBCompletedEventArgs>(AddListToDBCompleted);
+			webClient.SaveDataCompleted -= new EventHandler<SaveDataCompletedEventArgs>(SaveDataCompleted);
+			webClient.SaveDataCompleted += new EventHandler<SaveDataCompletedEventArgs>(SaveDataCompleted);
 
-			webClient.AddListToDBAsync(folders);
+			webClient.SaveDataAsync(folders);
 		}
 
-		private void AddListToDBCompleted(object sender, AddListToDBCompletedEventArgs e)
+		private void SaveDataCompleted(object sender, SaveDataCompletedEventArgs e)
 		{
 			MessageBox.Show("成功插入" + e.Result + "行\n保存完毕");
 		}
@@ -117,10 +117,10 @@ namespace HuaweiSoftware.Folder
 			folders.Clear();
 		}
 
-		public void GetFileListFromDB(int id)
+		public void GetFiles(int id)
 		{
-			webClient.GetFileListFromDBCompleted -= new EventHandler<GetFileListFromDBCompletedEventArgs>(GetFileListFromDBCompleted);
-			webClient.GetFileListFromDBCompleted += new EventHandler<GetFileListFromDBCompletedEventArgs>(GetFileListFromDBCompleted);
+			webClient.GetFilesCompleted -= new EventHandler<GetFilesCompletedEventArgs>(GetFilesCompleted);
+			webClient.GetFilesCompleted += new EventHandler<GetFilesCompletedEventArgs>(GetFilesCompleted);
 
 			int? pid;
 
@@ -134,10 +134,10 @@ namespace HuaweiSoftware.Folder
 				pid = id;
 			}
 
-			webClient.GetFileListFromDBAsync(pid);
+			webClient.GetFilesAsync(pid);
 		}
 
-		private void GetFileListFromDBCompleted(object sender, GetFileListFromDBCompletedEventArgs e)
+		private void GetFilesCompleted(object sender, GetFilesCompletedEventArgs e)
 		{
 			List<List<string>> files = e.Result;
 			FileInfo fi;
@@ -157,19 +157,19 @@ namespace HuaweiSoftware.Folder
 		/// 从数据库中读取目录，包括子目录
 		/// </summary>
 		/// <param name="path">目录地址</param>
-		public void GetDirFromDB()
+		public void GetAllFolders()
 		{
-			webClient.GetDirListFromDBCompleted += new EventHandler<GetDirListFromDBCompletedEventArgs>(GetDirListFromDBCompleted);
+			webClient.GetAllFoldersCompleted += new EventHandler<GetAllFoldersCompletedEventArgs>(GetAllFoldersCompleted);
 
 			DirList.Clear();
 
 			// 把选择的目录加进去，以看到该目录下的文件
 			DirList.Add(new DirNameWithID(0, null, "."));
 
-			webClient.GetDirListFromDBAsync();
+			webClient.GetAllFoldersAsync();
 		}
 
-		private void GetDirListFromDBCompleted(object sender, GetDirListFromDBCompletedEventArgs e)
+		private void GetAllFoldersCompleted(object sender, GetAllFoldersCompletedEventArgs e)
 		{
 			List<List<string>> folders = e.Result;
 

@@ -15,43 +15,43 @@
       <xsd:import schemaLocation="http://localhost:61020/FolderWCF.svc?xsd=xsd2" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
     </xsd:schema>
   </wsdl:types>
-  <wsdl:message name="IFolderWCF_AddListToDB_InputMessage">
-    <wsdl:part name="parameters" element="tns:AddListToDB" />
+  <wsdl:message name="IFolderWCF_SaveData_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveData" />
   </wsdl:message>
-  <wsdl:message name="IFolderWCF_AddListToDB_OutputMessage">
-    <wsdl:part name="parameters" element="tns:AddListToDBResponse" />
+  <wsdl:message name="IFolderWCF_SaveData_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveDataResponse" />
   </wsdl:message>
-  <wsdl:message name="IFolderWCF_GetDirListFromDB_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetDirListFromDB" />
+  <wsdl:message name="IFolderWCF_GetAllFolders_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllFolders" />
   </wsdl:message>
-  <wsdl:message name="IFolderWCF_GetDirListFromDB_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetDirListFromDBResponse" />
+  <wsdl:message name="IFolderWCF_GetAllFolders_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllFoldersResponse" />
   </wsdl:message>
-  <wsdl:message name="IFolderWCF_GetFileListFromDB_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetFileListFromDB" />
+  <wsdl:message name="IFolderWCF_GetFiles_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetFiles" />
   </wsdl:message>
-  <wsdl:message name="IFolderWCF_GetFileListFromDB_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetFileListFromDBResponse" />
+  <wsdl:message name="IFolderWCF_GetFiles_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetFilesResponse" />
   </wsdl:message>
   <wsdl:portType name="IFolderWCF">
-    <wsdl:operation name="AddListToDB">
-      <wsdl:input wsaw:Action="http://tempuri.org/IFolderWCF/AddListToDB" message="tns:IFolderWCF_AddListToDB_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IFolderWCF/AddListToDBResponse" message="tns:IFolderWCF_AddListToDB_OutputMessage" />
+    <wsdl:operation name="SaveData">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFolderWCF/SaveData" message="tns:IFolderWCF_SaveData_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFolderWCF/SaveDataResponse" message="tns:IFolderWCF_SaveData_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="GetDirListFromDB">
-      <wsdl:input wsaw:Action="http://tempuri.org/IFolderWCF/GetDirListFromDB" message="tns:IFolderWCF_GetDirListFromDB_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IFolderWCF/GetDirListFromDBResponse" message="tns:IFolderWCF_GetDirListFromDB_OutputMessage" />
+    <wsdl:operation name="GetAllFolders">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFolderWCF/GetAllFolders" message="tns:IFolderWCF_GetAllFolders_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFolderWCF/GetAllFoldersResponse" message="tns:IFolderWCF_GetAllFolders_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="GetFileListFromDB">
-      <wsdl:input wsaw:Action="http://tempuri.org/IFolderWCF/GetFileListFromDB" message="tns:IFolderWCF_GetFileListFromDB_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IFolderWCF/GetFileListFromDBResponse" message="tns:IFolderWCF_GetFileListFromDB_OutputMessage" />
+    <wsdl:operation name="GetFiles">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFolderWCF/GetFiles" message="tns:IFolderWCF_GetFiles_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFolderWCF/GetFilesResponse" message="tns:IFolderWCF_GetFiles_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="CustomBinding_IFolderWCF" type="tns:IFolderWCF">
     <wsp:PolicyReference URI="#CustomBinding_IFolderWCF_policy" />
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
-    <wsdl:operation name="AddListToDB">
-      <soap12:operation soapAction="http://tempuri.org/IFolderWCF/AddListToDB" style="document" />
+    <wsdl:operation name="SaveData">
+      <soap12:operation soapAction="http://tempuri.org/IFolderWCF/SaveData" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -59,8 +59,8 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="GetDirListFromDB">
-      <soap12:operation soapAction="http://tempuri.org/IFolderWCF/GetDirListFromDB" style="document" />
+    <wsdl:operation name="GetAllFolders">
+      <soap12:operation soapAction="http://tempuri.org/IFolderWCF/GetAllFolders" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -68,8 +68,8 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="GetFileListFromDB">
-      <soap12:operation soapAction="http://tempuri.org/IFolderWCF/GetFileListFromDB" style="document" />
+    <wsdl:operation name="GetFiles">
+      <soap12:operation soapAction="http://tempuri.org/IFolderWCF/GetFiles" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
