@@ -2,13 +2,13 @@
 using System.Data.SqlClient;
 using System.IO;
 
-namespace HuaweiSoftware.Folder
+namespace HuaweiSoftware.Folder.FolderWCF
 {
 	// 注意: 使用“重构”菜单上的“重命名”命令，可以同时更改代码、svc 和配置文件中的类名“FolderWCF”。
 	// 注意: 为了启动 WCF 测试客户端以测试此服务，请在解决方案资源管理器中选择 FolderWCF.svc 或 FolderWCF.svc.cs，然后开始调试。
 	public class FolderWCF : IFolderWCF
 	{
-		private SqlConnection sqlConn = new SqlConnection(@"Data Source=CWJSJ-1403-007;Initial Catalog=FoldersDB;Persist Security Info=True;User ID=sa;Password=123456");
+		private SqlConnection sqlConn = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
 
 		/// <summary>
 		/// 添加文件到数据库，插入之前先清空
@@ -36,28 +36,24 @@ namespace HuaweiSoftware.Folder
 			FileInfo file;
 			DirectoryInfo dir;
 
-			foreach (List<string> l in folders)
+			foreach (List<string> folder in folders)
 			{
-				id = l[1];
-				pid = l[2];
+				id = folder[1];
+				pid = folder[2];
 
-				if (l[0] == "file")
+				if (folder[0] == "file")		// 如果是文件
 				{
-					file = new FileInfo(l[3]);
+					file = new FileInfo(folder[3]);
 
 					sqlComm = new SqlCommand(string.Format(@"INSERT INTO FileTable([Id],[PID],[Name],[Size],[Type],[CreateTime])VALUES({0},{1},'{2}',{3},'{4}','{5}')", id, pid, file.Name, file.Length, file.Extension, file.CreationTime.ToString("yyyy-MM-dd HH:mm:ss")), sqlConn);
 				}
-				else if (l[0] == "folder")
+				else							// 否则就是文件夹
 				{
-					dir = new DirectoryInfo(l[3]);
+					dir = new DirectoryInfo(folder[3]);
 
 					long size = GetDirSize(dir);
 
 					sqlComm = new SqlCommand(string.Format(@"INSERT INTO FileTable([Id],[PID],[Name],[Size],[Type],[CreateTime])VALUES({0},{1},'{2}',{3},'{4}','{5}')", id, pid, dir.Name, size, "dir", dir.CreationTime.ToString("yyyy-MM-dd HH:mm:ss")), sqlConn);
-				}
-				else
-				{
-					return 0;
 				}
 
 				rowCount += sqlComm.ExecuteNonQuery();
@@ -75,13 +71,13 @@ namespace HuaweiSoftware.Folder
 		{
 			long size = 0;
 
-			IEnumerable<FileInfo> files = dir.EnumerateFiles();
+			FileInfo[] files = dir.GetFiles();
 			foreach (var file in files)
 			{
 				size += file.Length;
 			}
 
-			IEnumerable<DirectoryInfo> dirs = dir.EnumerateDirectories();
+			DirectoryInfo[] dirs = dir.GetDirectories();
 			foreach (var di in dirs)
 			{
 				size += GetDirSize(di);
@@ -90,6 +86,10 @@ namespace HuaweiSoftware.Folder
 			return size;
 		}
 
+		/// <summary>
+		/// 从数据库中读取文件夹
+		/// </summary>
+		/// <returns>返回的文件夹LIST</returns>
 		public List<List<string>> GetAllFolders()
 		{
 			sqlConn.Open();
@@ -122,6 +122,11 @@ namespace HuaweiSoftware.Folder
 			return folders;
 		}
 
+		/// <summary>
+		/// 从数据库中读取文件
+		/// </summary>
+		/// <param name="PID">文件所在的文件夹的ID</param>
+		/// <returns>返回的文件LIST</returns>
 		public List<List<string>> GetFiles(int? PID = null)
 		{
 			sqlConn.Open();

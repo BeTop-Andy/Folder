@@ -1,17 +1,17 @@
 ﻿<configuration>
-	<system.serviceModel>
-		<bindings>
-   <customBinding>
-    <binding name="CustomBinding_IFolderWCF">
-     <binaryMessageEncoding />
-     <httpTransport maxReceivedMessageSize="2147483647" maxBufferSize="2147483647" />
-    </binding>
-   </customBinding>
-  </bindings>
-		<client>
-   <endpoint address="http://localhost:61020/FolderWCF.svc" binding="customBinding"
-    bindingConfiguration="CustomBinding_IFolderWCF" contract="FolderWCFReference.IFolderWCF"
-    name="CustomBinding_IFolderWCF" />
-  </client>
-	</system.serviceModel>
+    <system.serviceModel>
+        <bindings>
+            <customBinding>
+                <binding name="CustomBinding_IFolderWCF">
+                    <binaryMessageEncoding />
+                    <httpTransport maxReceivedMessageSize="2147483647" maxBufferSize="2147483647" />
+                </binding>
+            </customBinding>
+        </bindings>
+        <client>
+            <endpoint address="http://localhost:61110/FolderWCF.svc" binding="customBinding"
+                bindingConfiguration="CustomBinding_IFolderWCF" contract="FolderWCFReference.IFolderWCF"
+                name="CustomBinding_IFolderWCF" />
+        </client>
+    </system.serviceModel>
 </configuration>

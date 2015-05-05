@@ -1,1 +1,1 @@
-﻿<%@ ServiceHost Language="C#" Debug="true" Service="HuaweiSoftware.Folder.FolderWCF" CodeBehind="FolderWCF.svc.cs" %>
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="HuaweiSoftware.Folder.FolderWCF.FolderWCF" CodeBehind="FolderWCF.svc.cs" %>

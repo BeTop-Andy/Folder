@@ -1,4 +1,4 @@
-﻿namespace HuaweiSoftware.Folder
+﻿namespace HuaweiSoftware.Folder.FolderUI
 {
 	public class DirNameWithID
 	{

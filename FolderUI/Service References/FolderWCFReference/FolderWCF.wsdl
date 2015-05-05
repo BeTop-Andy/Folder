@@ -10,9 +10,9 @@
   </wsp:Policy>
   <wsdl:types>
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
-      <xsd:import schemaLocation="http://localhost:61020/FolderWCF.svc?xsd=xsd0" namespace="http://tempuri.org/" />
-      <xsd:import schemaLocation="http://localhost:61020/FolderWCF.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-      <xsd:import schemaLocation="http://localhost:61020/FolderWCF.svc?xsd=xsd2" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="http://localhost:61110/FolderWCF.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://localhost:61110/FolderWCF.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:61110/FolderWCF.svc?xsd=xsd2" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IFolderWCF_SaveData_InputMessage">
@@ -80,9 +80,9 @@
   </wsdl:binding>
   <wsdl:service name="FolderWCF">
     <wsdl:port name="CustomBinding_IFolderWCF" binding="tns:CustomBinding_IFolderWCF">
-      <soap12:address location="http://localhost:61020/FolderWCF.svc" />
+      <soap12:address location="http://localhost:61110/FolderWCF.svc" />
       <wsa10:EndpointReference>
-        <wsa10:Address>http://localhost:61020/FolderWCF.svc</wsa10:Address>
+        <wsa10:Address>http://localhost:61110/FolderWCF.svc</wsa10:Address>
       </wsa10:EndpointReference>
     </wsdl:port>
   </wsdl:service>

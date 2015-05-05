@@ -4,9 +4,9 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 
-using HuaweiSoftware.Folder.FolderWCFReference;
+using HuaweiSoftware.Folder.FolderUI.FolderWCFReference;
 
-namespace HuaweiSoftware.Folder
+namespace HuaweiSoftware.Folder.FolderUI
 {
 	public class DataBaseOperator
 	{
@@ -14,10 +14,10 @@ namespace HuaweiSoftware.Folder
 
 		static private int id;		// 每一个文件（夹）标识
 
-		//存放从数据库中读取的数据
+		// 存放从数据库中读取的数据
 		private List<List<string>> folders;
 
-		//存放处理后的数据
+		// 存放处理后的数据
 		public ObservableCollection<FileInfo> FileList
 		{
 			get;

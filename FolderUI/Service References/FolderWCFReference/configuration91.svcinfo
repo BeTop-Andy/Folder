@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="pWoE9CgampoQLRDvZb3+xdQfRco=">
+<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="fTYiGsNY9nZli9qhnIHAaEjHxns=">
   <bindingConfigurations>
     <bindingConfiguration bindingType="customBinding" name="CustomBinding_IFolderWCF">
       <properties>
@@ -154,10 +154,10 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="CustomBinding_IFolderWCF" contract="FolderWCFReference.IFolderWCF" bindingType="customBinding" address="http://localhost:61020/FolderWCF.svc" bindingConfiguration="CustomBinding_IFolderWCF">
+    <endpoint name="CustomBinding_IFolderWCF" contract="FolderWCFReference.IFolderWCF" bindingType="customBinding" address="http://localhost:61110/FolderWCF.svc" bindingConfiguration="CustomBinding_IFolderWCF">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>http://localhost:61020/FolderWCF.svc</serializedValue>
+          <serializedValue>http://localhost:61110/FolderWCF.svc</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />

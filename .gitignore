@@ -219,3 +219,6 @@ pip-log.txt
 .svn
 
 学习心得.txt
+
+Web.Debug.config
+Web.Release.config
