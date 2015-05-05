@@ -62,8 +62,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ClientBin\Folder.xap" />
-    <Content Include="FolderTestPage.aspx" />
-    <Content Include="FolderTestPage.html" />
+    <Content Include="FolderUITestPage.aspx" />
+    <Content Include="FolderUITestPage.html" />
     <Content Include="Silverlight.js" />
   </ItemGroup>
   <ItemGroup>
@@ -82,6 +82,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ClientBin\Debug\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FolderWCF\FolderWCF.csproj">
+      <Project>{290f1a56-d635-4426-bb5f-4347f836baa7}</Project>
+      <Name>FolderWCF</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

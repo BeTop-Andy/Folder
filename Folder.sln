@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{1
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FolderWCF", "FolderWCF\FolderWCF.csproj", "{290F1A56-D635-4426-BB5F-4347F836BAA7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FolderDB", "FolderDB\FolderDB.csproj", "{9B498604-333A-4F96-BA49-2CFA6E6B2B00}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{290F1A56-D635-4426-BB5F-4347F836BAA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{290F1A56-D635-4426-BB5F-4347F836BAA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{290F1A56-D635-4426-BB5F-4347F836BAA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B498604-333A-4F96-BA49-2CFA6E6B2B00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B498604-333A-4F96-BA49-2CFA6E6B2B00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B498604-333A-4F96-BA49-2CFA6E6B2B00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B498604-333A-4F96-BA49-2CFA6E6B2B00}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

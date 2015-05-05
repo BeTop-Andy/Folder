@@ -27,6 +27,10 @@ namespace HuaweiSoftware.Folder.FolderUI
 		private void Application_Startup(object sender, StartupEventArgs e)
 		{
 			this.RootVisual = new MainPage();
+
+			// 用于查看异常
+			bool httpResutl = WebRequest.RegisterPrefix("http://", System.Net.Browser.WebRequestCreator.ClientHttp);
+			bool httpsResutl = WebRequest.RegisterPrefix("https://", System.Net.Browser.WebRequestCreator.ClientHttp);
 		}
 
 		private void Application_Exit(object sender, EventArgs e)
