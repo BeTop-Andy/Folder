@@ -165,9 +165,11 @@ namespace HuaweiSoftware.Folder.FolderUI
 
 			foreach (var file in files)
 			{
-				fi = new File{
+				fi = new File
+				{
 					Name = file[2],
-					Size = Convert.ToInt64(file[3]),
+					// 转换成KB
+					Size = ConvertToKB(Convert.ToInt64(file[3])),
 					Type = file[4],
 					CreateTime = file[5]
 				};
@@ -175,6 +177,24 @@ namespace HuaweiSoftware.Folder.FolderUI
 			}
 
 			onLoadFileFinish(null, null);
+		}
+
+		/// <summary>
+		/// 字节转换成KB
+		/// </summary>
+		/// <param name="num">原来的数值</param>
+		/// <returns>转换后的数值</returns>
+		private long ConvertToKB(long num)
+		{
+			long result = num >> 10;	// 除以1024
+
+			// 有余数，进一
+			if (num % 1024 != 0)
+			{
+				result++;
+			}
+
+			return result;
 		}
 
 		/// <summary>
@@ -266,7 +286,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 			{
 				// 找“孩子”
 				// tempDir的PID等于nowDir的ID
-				if (tempDir[1] == nowDir[0])			
+				if (tempDir[1] == nowDir[0])
 				{
 					AddToDirTree(tempDir, level, nowNode);
 				}
