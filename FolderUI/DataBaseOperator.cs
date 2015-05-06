@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 
 using HuaweiSoftware.Folder.FolderUI.FolderWCFReference;
 
@@ -14,6 +15,9 @@ namespace HuaweiSoftware.Folder.FolderUI
 
 		static private int id;		// 每一个文件（夹）标识
 
+		// 根目录
+		private TreeViewItem root;
+
 		// 存放从数据库中读取的数据
 		private List<List<string>> folders;
 
@@ -24,7 +28,8 @@ namespace HuaweiSoftware.Folder.FolderUI
 			set;
 		}
 
-		public ObservableCollection<DirNameWithID> DirList
+		// 存放处理后的数据
+		public ObservableCollection<TreeViewItem> DirTree
 		{
 			get;
 			set;
@@ -39,9 +44,14 @@ namespace HuaweiSoftware.Folder.FolderUI
 
 			id = 1;
 
-			FileList = new ObservableCollection<FileInfo>();		
-			DirList = new ObservableCollection<DirNameWithID>();
+			FileList = new ObservableCollection<FileInfo>();
+			DirTree = new ObservableCollection<TreeViewItem>();
 			folders = new List<List<string>>();
+			root = new TreeViewItem();
+
+			// 根目录的相关属性
+			root.Header = "Root";
+			root.Tag = new DirNameWithID(0, null, "Root");
 		}
 
 		/// <summary>
@@ -161,21 +171,22 @@ namespace HuaweiSoftware.Folder.FolderUI
 		{
 			webClient.GetAllFoldersCompleted += new EventHandler<GetAllFoldersCompletedEventArgs>(GetAllFoldersCompleted);
 
-			DirList.Clear();
+			DirTree.Clear();
 
 			// 把选择的目录加进去，以看到该目录下的文件
-			DirList.Add(new DirNameWithID(0, null, "."));
+			DirTree.Add(root);
 
 			webClient.GetAllFoldersAsync();
 		}
 
 		private void GetAllFoldersCompleted(object sender, GetAllFoldersCompletedEventArgs e)
 		{
-			List<List<string>> folders = e.Result;
+			folders = e.Result;
 
 			// 用于存放PID为NULL的目录，相当于几棵目录树的根节点，所以叫treeRoots
 			List<List<string>> treeRoots = new List<List<string>>();
 
+			// 找PID为NULL的目录
 			foreach (var dir in folders)
 			{
 				if (dir[1] == "NULL")
@@ -187,15 +198,24 @@ namespace HuaweiSoftware.Folder.FolderUI
 			// 先序遍历各棵目录树
 			foreach (var treeRoot in treeRoots)
 			{
-				AddToDirList(treeRoot, 1);
+				AddToDirTree(treeRoot, 1, root);
 
-				GetAllChildren(folders, treeRoot, 2);
+				// 				TreeViewItem a = new TreeViewItem();
+				// 				root.Items.Add(a);
+				// 
+				// 				GetAllChildren(folders, treeRoot, 2, a);	// 
 			}
 
 			onLoadDirFinish(null, null);
 		}
 
-		private void AddToDirList(List<string> dir, int level)
+		/// <summary>
+		/// 把目录加入目录树
+		/// </summary>
+		/// <param name="dir">目录相关信息</param>
+		/// <param name="level">深度</param>
+		/// <param name="parentNode">父节点</param>
+		private void AddToDirTree(List<string> dir, int level, TreeViewItem parentNode)
 		{
 			int id = Convert.ToInt32(dir[0]);
 			int? pid = null;
@@ -209,24 +229,43 @@ namespace HuaweiSoftware.Folder.FolderUI
 			}
 			string name = dir[2];
 
-			DirList.Add(new DirNameWithID(id, pid, name, level));
+			TreeViewItem childNode = new TreeViewItem();
+			childNode.Header = name;
+			childNode.Tag = new DirNameWithID(id, pid, name, level);
+
+
+			if (parentNode != null)
+			{
+				parentNode.Items.Add(childNode);
+			}
+			else
+			{
+				DirTree.Add(childNode);
+			}
+
+			GetAllChildren(dir, level + 1, childNode);
 		}
 
 		/// <summary>
 		/// Get所有孩子节点
 		/// </summary>
-		/// <param name="dirs">所有目录</param>
-		/// <param name="dir"></param>
+		/// <param name="nowDir"></param>
 		/// <param name="level">深度</param>
-		private void GetAllChildren(List<List<string>> dirs, List<string> dir, int level)
+		/// <param name="nowNode">现在的节点</param>
+		private void GetAllChildren(List<string> nowDir, int level, TreeViewItem nowNode)
 		{
-			foreach (List<string> nowDir in dirs)
+			foreach (List<string> tempDir in folders)
 			{
-				if (nowDir[1] == dir[0])			//nowDir的PID等于dir的ID
+				// 找“孩子”
+				// tempDir的PID等于nowDir的ID
+				if (tempDir[1] == nowDir[0])			
 				{
-					AddToDirList(nowDir, level);
-
-					GetAllChildren(dirs, nowDir, level + 1);
+					AddToDirTree(tempDir, level, nowNode);
+// 
+// 					TreeViewItem a = new TreeViewItem();
+// 					nowNode.Items.Add(a);
+// 
+// 					GetAllChildren(dirs, nowDir, level + 1, a);
 				}
 			}
 		}

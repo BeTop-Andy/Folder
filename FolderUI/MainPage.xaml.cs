@@ -26,7 +26,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 
 		private void btn_Save_Click(object sender, RoutedEventArgs e)
 		{
-			lst_Folder.ItemsSource = null;
+			tree_Folder.ItemsSource = null;
 			lst_File.ItemsSource = null;
 
 			try
@@ -83,22 +83,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 			ddlst_Extension.IsEnabled = b;
 		}
 
-		private void lst_Folder_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			int index = lst_Folder.SelectedIndex;
-
-			if (index >= 0)
-			{
-				DirNameWithID dir = dbOp.DirList[index];
-
-				dbOp.GetFiles(dir.Id);
-
-				dbOp.onLoadFileFinish -= new EventHandler(LoadFileFinish);
-				dbOp.onLoadFileFinish += new EventHandler(LoadFileFinish);
-			}
-		}
-
- 		private void ddlst_Extension_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		private void ddlst_Extension_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			// 临时集合
 			ObservableCollection<FileInfo> files = new ObservableCollection<FileInfo>();
@@ -118,7 +103,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 			}
 
 			lst_File.ItemsSource = files;
- 		}
+		}
 
 		private void btn_Search_Click(object sender, RoutedEventArgs e)
 		{
@@ -142,7 +127,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 			{
 				ddlst_Extension.SelectedIndex = 0;
 			}
- 		}
+		}
 
 		private void txt_Search_KeyDown(object sender, KeyEventArgs e)
 		{
@@ -171,7 +156,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 		/// <param name="e"></param>
 		private void LoadDirFinish(object sender, EventArgs e)
 		{
-			lst_Folder.ItemsSource = dbOp.DirList;
+			tree_Folder.ItemsSource = dbOp.DirTree;
 			SetEnabled(true);
 		}
 
@@ -195,6 +180,18 @@ namespace HuaweiSoftware.Folder.FolderUI
 					extensions.Add(fileExt);
 				}
 			}
+		}
+
+		private void tree_Folder_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+		{
+			TreeViewItem nowNode = (TreeViewItem) tree_Folder.SelectedItem;
+
+			DirNameWithID dir = (DirNameWithID) nowNode.Tag;
+			dbOp.GetFiles(dir.Id);
+
+			// 订阅事件
+			dbOp.onLoadFileFinish -= new EventHandler(LoadFileFinish);
+			dbOp.onLoadFileFinish += new EventHandler(LoadFileFinish);
 		}
 	}
 }
