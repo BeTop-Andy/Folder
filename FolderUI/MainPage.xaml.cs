@@ -27,7 +27,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 		private void btn_Save_Click(object sender, RoutedEventArgs e)
 		{
 			tree_Folder.ItemsSource = null;
-			lst_File.ItemsSource = null;
+			dg_File.ItemsSource = null;
 
 			try
 			{
@@ -86,7 +86,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 		private void ddlst_Extension_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			// 临时集合
-			ObservableCollection<FileInfo> files = new ObservableCollection<FileInfo>();
+			ObservableCollection<File> files = new ObservableCollection<File>();
 
 			// 选择后缀
 			if (ddlst_Extension.SelectedIndex > 0)
@@ -95,14 +95,14 @@ namespace HuaweiSoftware.Folder.FolderUI
 
 				foreach (var fileName in dbOp.FileList)
 				{
-					if (fileName.Extension == extension)
+					if (fileName.Type == extension)
 					{
 						files.Add(fileName);
 					}
 				}
 			}
 
-			lst_File.ItemsSource = files;
+			dg_File.ItemsSource = files;
 		}
 
 		private void btn_Search_Click(object sender, RoutedEventArgs e)
@@ -111,7 +111,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 
 			if (keyword != string.Empty)
 			{
-				ObservableCollection<FileInfo> files = new ObservableCollection<FileInfo>();
+				ObservableCollection<File> files = new ObservableCollection<File>();
 
 				foreach (var file in dbOp.FileList)
 				{
@@ -121,7 +121,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 					}
 				}
 
-				lst_File.ItemsSource = files;
+				dg_File.ItemsSource = files;
 			}
 			else
 			{
@@ -167,14 +167,14 @@ namespace HuaweiSoftware.Folder.FolderUI
 		/// <param name="e"></param>
 		private void LoadFileFinish(object sender, EventArgs e)
 		{
-			lst_File.ItemsSource = dbOp.FileList;
+			dg_File.ItemsSource = dbOp.FileList;
 
 			extensions.Clear();
 			extensions.Add("ALL");
 
-			foreach (FileInfo file in dbOp.FileList)
+			foreach (File file in dbOp.FileList)
 			{
-				string fileExt = file.Extension;		// 后缀
+				string fileExt = file.Type;		// 后缀
 				if (!extensions.Contains(fileExt))
 				{
 					extensions.Add(fileExt);
@@ -186,12 +186,15 @@ namespace HuaweiSoftware.Folder.FolderUI
 		{
 			TreeViewItem nowNode = (TreeViewItem) tree_Folder.SelectedItem;
 
-			DirNameWithID dir = (DirNameWithID) nowNode.Tag;
-			dbOp.GetFiles(dir.Id);
+			if (nowNode != null)
+			{
+				DirNameWithID dir = (DirNameWithID) nowNode.Tag;
+				dbOp.GetFiles(dir.Id);
 
-			// 订阅事件
-			dbOp.onLoadFileFinish -= new EventHandler(LoadFileFinish);
-			dbOp.onLoadFileFinish += new EventHandler(LoadFileFinish);
+				// 订阅事件
+				dbOp.onLoadFileFinish -= new EventHandler(LoadFileFinish);
+				dbOp.onLoadFileFinish += new EventHandler(LoadFileFinish);
+			}
 		}
 	}
 }

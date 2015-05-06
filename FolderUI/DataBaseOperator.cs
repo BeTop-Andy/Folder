@@ -22,7 +22,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 		private List<List<string>> folders;
 
 		// 存放处理后的数据
-		public ObservableCollection<FileInfo> FileList
+		public ObservableCollection<File> FileList
 		{
 			get;
 			set;
@@ -44,7 +44,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 
 			id = 1;
 
-			FileList = new ObservableCollection<FileInfo>();
+			FileList = new ObservableCollection<File>();
 			DirTree = new ObservableCollection<TreeViewItem>();
 			folders = new List<List<string>>();
 			root = new TreeViewItem();
@@ -127,6 +127,10 @@ namespace HuaweiSoftware.Folder.FolderUI
 			folders.Clear();
 		}
 
+		/// <summary>
+		/// 从数据库中读取文件
+		/// </summary>
+		/// <param name="id">目录ID</param>
 		public void GetFiles(int id)
 		{
 			webClient.GetFilesCompleted -= new EventHandler<GetFilesCompletedEventArgs>(GetFilesCompleted);
@@ -147,16 +151,26 @@ namespace HuaweiSoftware.Folder.FolderUI
 			webClient.GetFilesAsync(pid);
 		}
 
+		/// <summary>
+		/// 读取完成，转存到fileList中
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void GetFilesCompleted(object sender, GetFilesCompletedEventArgs e)
 		{
 			List<List<string>> files = e.Result;
-			FileInfo fi;
+			File fi;	// 临时变量
 
 			FileList.Clear();
 
 			foreach (var file in files)
 			{
-				fi = new FileInfo(file[2]);
+				fi = new File{
+					Name = file[2],
+					Size = Convert.ToInt64(file[3]),
+					Type = file[4],
+					CreateTime = file[5]
+				};
 				FileList.Add(fi);
 			}
 

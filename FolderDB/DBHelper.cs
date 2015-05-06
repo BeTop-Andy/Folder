@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 
@@ -155,6 +156,9 @@ namespace HuaweiSoftware.Folder.FolderDB
 				int id;
 				string pid;
 				string name;
+				long size;
+				string type;
+				DateTime createTime;
 				List<string> file;		// 临时变量
 				while (dr.Read())
 				{
@@ -162,10 +166,16 @@ namespace HuaweiSoftware.Folder.FolderDB
 					id = dr.GetInt32(1);
 					pid = dr.IsDBNull(2) ? "NULL" : dr.GetInt32(2).ToString();
 					name = dr.GetString(3);
+					size = dr.GetInt64(4);
+					type = dr.GetString(5);
+					createTime = dr.GetDateTime(6);
 
 					file.Add(id.ToString());
 					file.Add(pid);
 					file.Add(name);
+					file.Add(size.ToString());
+					file.Add(type);
+					file.Add(createTime.ToString());
 
 					files.Add(file);
 				}

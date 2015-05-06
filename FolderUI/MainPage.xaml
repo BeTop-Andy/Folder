@@ -15,17 +15,22 @@
         </Grid.ColumnDefinitions>
         <TextBox x:Name="txt_Path" Height="23" Margin="75,10,170,0" VerticalAlignment="Top" Grid.ColumnSpan="3"/>
         <Button x:Name="btn_Save" Content="保存" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="75" Height="23" Grid.Column="2" Click="btn_Save_Click"/>
-
-        <ListBox x:Name="lst_File" Grid.Column="1" Margin="10,75,10,10" Grid.ColumnSpan="2"/>
-        <sdk:Label Content=" &quot;.&quot; 表示本目录;&#x0d;有多少个 &quot;/&quot; 表示多少级子目录,没有则表示本目录下的文件夹" Height="32" Margin="10,38,10,0" VerticalAlignment="Top" BorderBrush="Black"/>
-        <ComboBox x:Name="ddlst_Extension" Grid.Column="1" Margin="65,50,10,0" VerticalAlignment="Top" SelectionChanged="ddlst_Extension_SelectionChanged" Height="20" IsEnabled="False"/>
-        <sdk:Label Content="选择后缀" Grid.Column="1" HorizontalAlignment="Left" Margin="10,54,0,0" VerticalAlignment="Top" Width="55" Height="16"/>
-        <TextBox x:Name="txt_Search" Grid.Column="2" Height="23" Margin="10,47,90,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" KeyDown="txt_Search_KeyDown" TextChanged="txt_Search_TextChanged" IsEnabled="False"/>
-        <Button x:Name="btn_Search" Content="搜索" Grid.Column="2" Margin="0,47,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Height="22" Click="btn_Search_Click" IsEnabled="False"/>
+        <ComboBox x:Name="ddlst_Extension" Grid.Column="1" Margin="65,41,10,0" VerticalAlignment="Top" SelectionChanged="ddlst_Extension_SelectionChanged" Height="20" IsEnabled="False"/>
+        <sdk:Label Content="选择后缀" Grid.Column="1" HorizontalAlignment="Left" Margin="10,45,0,0" VerticalAlignment="Top" Width="55" Height="16"/>
+        <TextBox x:Name="txt_Search" Grid.Column="2" Height="23" Margin="10,38,90,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" KeyDown="txt_Search_KeyDown" TextChanged="txt_Search_TextChanged" IsEnabled="False"/>
+        <Button x:Name="btn_Search" Content="搜索" Grid.Column="2" Margin="0,39,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Height="22" Click="btn_Search_Click" IsEnabled="False"/>
         <Button x:Name="btn_Load" Content="加载" Grid.Column="2" HorizontalAlignment="Right" Margin="0,10,90,0" VerticalAlignment="Top" Width="75" Click="btn_Load_Click"/>
         <Border BorderThickness="1" HorizontalAlignment="Left" Height="22" Margin="10,10,0,0" VerticalAlignment="Top" Width="60">
             <sdk:Label Content="请输入路径"/>
         </Border>
-        <sdk:TreeView x:Name="tree_Folder" Margin="10,75,10,10" SelectedItemChanged="tree_Folder_SelectedItemChanged"/>
+        <sdk:TreeView x:Name="tree_Folder" Margin="10,38,10,10" SelectedItemChanged="tree_Folder_SelectedItemChanged"/>
+        <sdk:DataGrid x:Name="dg_File" Grid.Column="1" Margin="10,66,10,10" Grid.ColumnSpan="2" AutoGenerateColumns="False">
+            <sdk:DataGrid.Columns>
+                <sdk:DataGridTextColumn Header="Name" Binding="{Binding Path=Name}" CanUserSort="True" CanUserReorder="True" CellStyle="{x:Null}" CanUserResize="True" ClipboardContentBinding="{x:Null}" DisplayIndex="-1" DragIndicatorStyle="{x:Null}" EditingElementStyle="{x:Null}" ElementStyle="{x:Null}" Foreground="{x:Null}" FontWeight="Normal" FontStyle="Normal" HeaderStyle="{x:Null}" IsReadOnly="True" MaxWidth="Infinity" MinWidth="0" SortMemberPath="{x:Null}" Visibility="Visible" Width="Auto"/>
+                <sdk:DataGridTextColumn Binding="{Binding Path=CreateTime}" CanUserSort="True" CanUserReorder="True" CellStyle="{x:Null}" CanUserResize="True" ClipboardContentBinding="{x:Null}" DisplayIndex="-1" DragIndicatorStyle="{x:Null}" EditingElementStyle="{x:Null}" ElementStyle="{x:Null}" Foreground="{x:Null}" FontWeight="Normal" FontStyle="Normal" HeaderStyle="{x:Null}" Header="CreateTime" IsReadOnly="True" MaxWidth="Infinity" MinWidth="0" SortMemberPath="{x:Null}" Visibility="Visible" Width="Auto"/>
+                <sdk:DataGridTextColumn Binding="{Binding Path=Type}" CanUserSort="True" CanUserReorder="True" CellStyle="{x:Null}" CanUserResize="True" ClipboardContentBinding="{x:Null}" DisplayIndex="-1" DragIndicatorStyle="{x:Null}" EditingElementStyle="{x:Null}" ElementStyle="{x:Null}" Foreground="{x:Null}" FontWeight="Normal" FontStyle="Normal" HeaderStyle="{x:Null}" Header="Type" IsReadOnly="True" MaxWidth="Infinity" MinWidth="0" SortMemberPath="{x:Null}" Visibility="Visible" Width="Auto"/>
+                <sdk:DataGridTextColumn Binding="{Binding Path=Size}" CanUserSort="True" CanUserReorder="True" CellStyle="{x:Null}" CanUserResize="True" ClipboardContentBinding="{x:Null}" DisplayIndex="-1" DragIndicatorStyle="{x:Null}" EditingElementStyle="{x:Null}" ElementStyle="{x:Null}" Foreground="{x:Null}" FontWeight="Normal" FontStyle="Normal" HeaderStyle="{x:Null}" Header="Size" IsReadOnly="True" MaxWidth="Infinity" MinWidth="0" SortMemberPath="{x:Null}" Visibility="Visible" Width="Auto"/>
+            </sdk:DataGrid.Columns>
+        </sdk:DataGrid>
     </Grid>
 </UserControl>
