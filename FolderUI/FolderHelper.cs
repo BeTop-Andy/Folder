@@ -9,49 +9,63 @@ using HuaweiSoftware.Folder.FolderUI.FolderWCFReference;
 
 namespace HuaweiSoftware.Folder.FolderUI
 {
-	public class DataBaseOperator
+	public class FolderHelper
 	{
-		static private FolderWCFClient webClient;
+		static private FolderWCFClient m_WebClient;
 
-		static private int id;		// 每一个文件（夹）标识
+		static private int m_ID;		// 每一个文件（夹）标识
 
 		// 根目录
-		private TreeViewItem root;
+		private TreeViewItem m_Root;
 
 		// 存放从数据库中读取的数据
-		private List<List<string>> folders;
+		private List<List<string>> m_Folders;
 
 		// 存放处理后的数据
-		public ObservableCollection<File> FileList
+		private List<List<string>> m_FileList;
+		public List<List<string>> FileList
 		{
-			get;
-			set;
+			get
+			{
+				return m_FileList;
+			}
+			set
+			{
+				m_FileList = value;
+			}
 		}
 
 		// 存放处理后的数据
+		private ObservableCollection<TreeViewItem> m_DirTree;
 		public ObservableCollection<TreeViewItem> DirTree
 		{
-			get;
-			set;
+			get
+			{
+				return m_DirTree;
+			}
+			set
+			{
+				m_DirTree = value;
+			}
 		}
 
 		public event EventHandler onLoadDirFinish;		// 触发读取目录完成事件
 		public event EventHandler onLoadFileFinish;		// 触发读取文件完成事件
 
-		public DataBaseOperator()
+		public FolderHelper()
 		{
-			webClient = new FolderWCFClient();
+			m_WebClient = new FolderWCFClient();
 
-			id = 1;
+			m_ID = 1;
 
-			FileList = new ObservableCollection<File>();
-			DirTree = new ObservableCollection<TreeViewItem>();
-			folders = new List<List<string>>();
-			root = new TreeViewItem();
+			m_FileList = new List<List<string>>();
+			m_DirTree = new ObservableCollection<TreeViewItem>();
+			m_Folders = new List<List<string>>();
+			m_Root = new TreeViewItem();
 
 			// 根目录的相关属性
-			root.Header = "Root";
-			root.Tag = 0;		// 保存树节点（文件夹）的ID
+			m_Root.Header = "Root";
+			m_Root.Tag = 0;		// 保存树节点（文件夹）的ID
 		}
 
 		/// <summary>
@@ -63,20 +77,20 @@ namespace HuaweiSoftware.Folder.FolderUI
 		{
 			IEnumerable<DirectoryInfo> dirs = dir.EnumerateDirectories();
 
-			List<string> folder;
+			List<string> tmp_folder;
 			foreach (DirectoryInfo di in dirs)
 			{
-				int tmp_id = id;
+				int tmp_id = m_ID;		// 临时保存ID
 
-				folder = new List<string>();		// 临时变量
-				folder.Add("folder");
-				folder.Add(id.ToString());
-				folder.Add(pid.HasValue ? pid.Value.ToString() : "NULL");
-				folder.Add(di.FullName);
+				tmp_folder = new List<string>();		// 临时变量
+				tmp_folder.Add("folder");
+				tmp_folder.Add(m_ID.ToString());
+				tmp_folder.Add(pid.HasValue ? pid.Value.ToString() : "NULL");
+				tmp_folder.Add(di.FullName);
 
-				folders.Add(folder);
+				m_Folders.Add(tmp_folder);
 
-				id++;
+				m_ID++;
 
 				AddFileToList(di, tmp_id);
 				AddDirToList(di, tmp_id);
@@ -91,18 +105,19 @@ namespace HuaweiSoftware.Folder.FolderUI
 		public void AddFileToList(DirectoryInfo dir, int? pid)
 		{
 			IEnumerable<FileInfo> files = dir.EnumerateFiles();
-			List<string> file;
 
-			foreach (FileInfo fi in files)
+			List<string> tmp_file;		// 临时变量
+
+			foreach (FileInfo file in files)
 			{
-				file = new List<string>();		// 临时变量
-				file.Add("file");
-				file.Add(id.ToString());
-				file.Add(pid.HasValue ? pid.Value.ToString() : "NULL");
-				file.Add(fi.FullName);
-				folders.Add(file);
+				tmp_file = new List<string>();		
+				tmp_file.Add("file");
+				tmp_file.Add(m_ID.ToString());
+				tmp_file.Add(pid.HasValue ? pid.Value.ToString() : "NULL");
+				tmp_file.Add(file.FullName);
+				m_Folders.Add(tmp_file);
 
-				id++;
+				m_ID++;
 			}
 		}
 
@@ -111,10 +126,10 @@ namespace HuaweiSoftware.Folder.FolderUI
 		/// </summary>
 		public void SavaData()
 		{
-			webClient.SaveDataCompleted -= new EventHandler<SaveDataCompletedEventArgs>(SaveDataCompleted);
-			webClient.SaveDataCompleted += new EventHandler<SaveDataCompletedEventArgs>(SaveDataCompleted);
+			m_WebClient.SaveDataCompleted -= new EventHandler<SaveDataCompletedEventArgs>(SaveDataCompleted);
+			m_WebClient.SaveDataCompleted += new EventHandler<SaveDataCompletedEventArgs>(SaveDataCompleted);
 
-			webClient.SaveDataAsync(folders);
+			m_WebClient.SaveDataAsync(m_Folders);
 		}
 
 		private void SaveDataCompleted(object sender, SaveDataCompletedEventArgs e)
@@ -124,7 +139,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 
 		public void ClearDBList()
 		{
-			folders.Clear();
+			m_Folders.Clear();
 		}
 
 		/// <summary>
@@ -133,8 +148,8 @@ namespace HuaweiSoftware.Folder.FolderUI
 		/// <param name="id">目录ID</param>
 		public void GetFiles(int id)
 		{
-			webClient.GetFilesCompleted -= new EventHandler<GetFilesCompletedEventArgs>(GetFilesCompleted);
-			webClient.GetFilesCompleted += new EventHandler<GetFilesCompletedEventArgs>(GetFilesCompleted);
+			m_WebClient.GetFilesCompleted -= new EventHandler<GetFilesCompletedEventArgs>(GetFilesCompleted);
+			m_WebClient.GetFilesCompleted += new EventHandler<GetFilesCompletedEventArgs>(GetFilesCompleted);
 
 			int? pid;
 
@@ -148,7 +163,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 				pid = id;
 			}
 
-			webClient.GetFilesAsync(pid);
+			m_WebClient.GetFilesAsync(pid);
 		}
 
 		/// <summary>
@@ -159,21 +174,22 @@ namespace HuaweiSoftware.Folder.FolderUI
 		private void GetFilesCompleted(object sender, GetFilesCompletedEventArgs e)
 		{
 			List<List<string>> files = e.Result;
-			File fi;	// 临时变量
+			List<string> tmp_file;	// 临时变量
 
-			FileList.Clear();
+			m_FileList.Clear();
 
 			foreach (var file in files)
 			{
-				fi = new File
-				{
-					Name = file[2],
-					// 转换成KB
-					Size = ConvertToKB(Convert.ToInt64(file[3])),
-					Type = file[4],
-					CreateTime = file[5]
-				};
-				FileList.Add(fi);
+				tmp_file = new List<string>();
+
+				// 排序按windows资源管理器来
+				tmp_file.Add(file[2]);	// 名称
+				tmp_file.Add(file[5]);	// 创建日期
+				tmp_file.Add(file[4]);	// 类型
+				// 文件大小,转成KB
+				tmp_file.Add(ConvertToKB(Convert.ToInt64(file[3])));
+
+				m_FileList.Add(tmp_file);
 			}
 
 			onLoadFileFinish(null, null);
@@ -184,7 +200,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 		/// </summary>
 		/// <param name="num">原来的数值</param>
 		/// <returns>转换后的数值</returns>
-		private long ConvertToKB(long num)
+		private string ConvertToKB(long num)
 		{
 			long result = num >> 10;	// 除以1024
 
@@ -194,7 +210,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 				result++;
 			}
 
-			return result;
+			return result.ToString();
 		}
 
 		/// <summary>
@@ -203,25 +219,25 @@ namespace HuaweiSoftware.Folder.FolderUI
 		/// <param name="path">目录地址</param>
 		public void GetAllFolders()
 		{
-			webClient.GetAllFoldersCompleted += new EventHandler<GetAllFoldersCompletedEventArgs>(GetAllFoldersCompleted);
+			m_WebClient.GetAllFoldersCompleted += new EventHandler<GetAllFoldersCompletedEventArgs>(GetAllFoldersCompleted);
 
-			DirTree.Clear();
+			m_DirTree.Clear();
 
 			// 把选择的目录加进去，以看到该目录下的文件
-			DirTree.Add(root);
+			m_DirTree.Add(m_Root);
 
-			webClient.GetAllFoldersAsync();
+			m_WebClient.GetAllFoldersAsync();
 		}
 
 		private void GetAllFoldersCompleted(object sender, GetAllFoldersCompletedEventArgs e)
 		{
-			folders = e.Result;
+			m_Folders = e.Result;
 
 			// 用于存放PID为NULL的目录，相当于几棵目录树的根节点，所以叫treeRoots
 			List<List<string>> treeRoots = new List<List<string>>();
 
 			// 找PID为NULL的目录
-			foreach (var dir in folders)
+			foreach (var dir in m_Folders)
 			{
 				if (dir[1] == "NULL")
 				{
@@ -232,7 +248,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 			// 先序遍历各棵目录树
 			foreach (var treeRoot in treeRoots)
 			{
-				AddToDirTree(treeRoot, 1, root);
+				AddToDirTree(treeRoot, 1, m_Root);
 			}
 
 			onLoadDirFinish(null, null);
@@ -268,7 +284,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 			}
 			else
 			{
-				DirTree.Add(childNode);
+				m_DirTree.Add(childNode);
 			}
 
 			GetAllChildren(dir, level + 1, childNode);
@@ -282,7 +298,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 		/// <param name="nowNode">现在的节点</param>
 		private void GetAllChildren(List<string> nowDir, int level, TreeViewItem nowNode)
 		{
-			foreach (List<string> tempDir in folders)
+			foreach (List<string> tempDir in m_Folders)
 			{
 				// 找“孩子”
 				// tempDir的PID等于nowDir的ID

@@ -26,10 +26,10 @@
         <sdk:TreeView x:Name="tree_Folder" Margin="10,38,10,10" SelectedItemChanged="tree_Folder_SelectedItemChanged"/>
         <sdk:DataGrid x:Name="dg_File" Grid.Column="1" Margin="10,66,10,10" Grid.ColumnSpan="2" AutoGenerateColumns="False">
             <sdk:DataGrid.Columns>
-                <sdk:DataGridTextColumn Header="Name" Binding="{Binding Path=Name}" CanUserSort="True" CanUserReorder="True" CanUserResize="True" DisplayIndex="-1" FontWeight="Normal" FontStyle="Normal" IsReadOnly="True" MaxWidth="Infinity" MinWidth="0" Visibility="Visible" Width="Auto"/>
-                <sdk:DataGridTextColumn Binding="{Binding Path=CreateTime}" CanUserSort="True" CanUserReorder="True" CanUserResize="True" DisplayIndex="-1" FontWeight="Normal" FontStyle="Normal" Header="CreateTime" IsReadOnly="True" MaxWidth="Infinity" MinWidth="0" Visibility="Visible" Width="Auto"/>
-                <sdk:DataGridTextColumn Binding="{Binding Path=Type}" CanUserSort="True" CanUserReorder="True" CanUserResize="True" DisplayIndex="-1" FontWeight="Normal" FontStyle="Normal" Header="Type" IsReadOnly="True" MaxWidth="Infinity" MinWidth="0" Visibility="Visible" Width="Auto"/>
-                <sdk:DataGridTextColumn Binding="{Binding Path=Size}" CanUserSort="True" CanUserReorder="True" CanUserResize="True" DisplayIndex="-1" FontWeight="Normal" FontStyle="Normal" Header="Size" IsReadOnly="True" MaxWidth="Infinity" MinWidth="0" Visibility="Visible" Width="Auto"/>
+                <sdk:DataGridTextColumn Header="名称" CanUserSort="True" CanUserReorder="True" CanUserResize="True" DisplayIndex="-1" FontWeight="Normal" FontStyle="Normal" IsReadOnly="True" MaxWidth="Infinity" MinWidth="0" Visibility="Visible" Width="Auto" Binding="{Binding Path=List[0]}"/>
+                <sdk:DataGridTextColumn CanUserSort="True" CanUserReorder="True" CanUserResize="True" DisplayIndex="-1" FontWeight="Normal" FontStyle="Normal" Header="创建日期" IsReadOnly="True" MaxWidth="Infinity" MinWidth="0" Visibility="Visible" Width="Auto" Binding="{Binding Path=List[1]}"/>
+                <sdk:DataGridTextColumn  CanUserSort="True" CanUserReorder="True" CanUserResize="True" DisplayIndex="-1" FontWeight="Normal" FontStyle="Normal" Header="类型" IsReadOnly="True" MaxWidth="Infinity" MinWidth="0" Visibility="Visible" Width="Auto" Binding="{Binding Path=List[2]}"/>
+                <sdk:DataGridTextColumn CanUserSort="True" CanUserReorder="True" CanUserResize="True" DisplayIndex="-1" FontWeight="Normal" FontStyle="Normal" Header="大小(KB)" IsReadOnly="True" MaxWidth="Infinity" MinWidth="0" Visibility="Visible" Width="Auto" Binding="{Binding Path=List[3]}"/>
             </sdk:DataGrid.Columns>
         </sdk:DataGrid>
     </Grid>

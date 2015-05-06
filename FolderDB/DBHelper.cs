@@ -7,6 +7,8 @@ namespace HuaweiSoftware.Folder.FolderDB
 {
     public class DBHelper
 	{
+		private static string m_ConnectionString = System.Configuration.ConfigurationManager.AppSettings["ConnectionString"];
+
 		/// <summary>
 		/// 添加文件到数据库，插入之前先清空
 		/// </summary>
@@ -18,23 +20,23 @@ namespace HuaweiSoftware.Folder.FolderDB
 		/// fullname:带路径的文件(夹)名</param>
 		/// <param name="connectionString">数据库的连接字符串</param>
 		/// <returns>受影响的行数</returns>
-		public static int SaveData(List<List<string>> folders, string connectionString)
+		public static int SaveData(List<List<string>> folders)
 		{
-			SqlConnection sqlConn = new SqlConnection(connectionString);
+			SqlConnection sqlConn = new SqlConnection(m_ConnectionString);
 
 			sqlConn.Open();
 
 			// 清空数据库
-			SqlCommand sqlComm = new SqlCommand("DELETE FROM FileTable", sqlConn);
+			SqlCommand cmd = new SqlCommand("DELETE FROM FileTable", sqlConn);
 
-			sqlComm.ExecuteNonQuery();
+			cmd.ExecuteNonQuery();
 
-			int rowCount = 0;
+			int rowCount = 0;		// 受影响的行数
 
 			string id;
 			string pid;
-			FileInfo file;
-			DirectoryInfo dir;
+			FileInfo file;			// 文件的临时变量
+			DirectoryInfo dir;		// 目录的临时变量
 
 			foreach (List<string> folder in folders)
 			{
@@ -45,7 +47,7 @@ namespace HuaweiSoftware.Folder.FolderDB
 				{
 					file = new FileInfo(folder[3]);
 
-					sqlComm = new SqlCommand(string.Format(@"INSERT INTO FileTable([Id],[PID],[Name],[Size],[Type],[CreateTime])VALUES({0},{1},'{2}',{3},'{4}','{5}')", id, pid, file.Name, file.Length, file.Extension, file.CreationTime.ToString("yyyy-MM-dd HH:mm:ss")), sqlConn);
+					cmd = new SqlCommand(string.Format(@"INSERT INTO FileTable([Id],[PID],[Name],[Size],[Type],[CreateTime])VALUES({0},{1},'{2}',{3},'{4}','{5}')", id, pid, file.Name, file.Length, file.Extension, file.CreationTime.ToString("yyyy-MM-dd HH:mm:ss")), sqlConn);
 				}
 				else							// 否则就是文件夹
 				{
@@ -53,10 +55,10 @@ namespace HuaweiSoftware.Folder.FolderDB
 
 					long size = GetDirSize(dir);
 
-					sqlComm = new SqlCommand(string.Format(@"INSERT INTO FileTable([Id],[PID],[Name],[Size],[Type],[CreateTime])VALUES({0},{1},'{2}',{3},'{4}','{5}')", id, pid, dir.Name, size, "dir", dir.CreationTime.ToString("yyyy-MM-dd HH:mm:ss")), sqlConn);
+					cmd = new SqlCommand(string.Format(@"INSERT INTO FileTable([Id],[PID],[Name],[Size],[Type],[CreateTime])VALUES({0},{1},'{2}',{3},'{4}','{5}')", id, pid, dir.Name, size, "dir", dir.CreationTime.ToString("yyyy-MM-dd HH:mm:ss")), sqlConn);
 				}
 
-				rowCount += sqlComm.ExecuteNonQuery();
+				rowCount += cmd.ExecuteNonQuery();
 			}
 
 			return rowCount;
@@ -91,28 +93,28 @@ namespace HuaweiSoftware.Folder.FolderDB
 		/// </summary>
 		/// <param name="connectionString">数据库的连接字符串</param>
 		/// <returns>返回的文件夹LIST</returns>
-		public static List<List<string>> GetAllFolders(string connectionString)
+		public static List<List<string>> GetAllFolders()
 		{
-			SqlConnection sqlConn = new SqlConnection(connectionString);
+			SqlConnection sqlConn = new SqlConnection(m_ConnectionString);
 
 			sqlConn.Open();
 
 			List<List<string>> folders = new List<List<string>>();
 
-			SqlCommand sqlComm = new SqlCommand("SELECT * FROM FileTable WHERE [Type] = 'dir'", sqlConn);
+			SqlCommand cmd = new SqlCommand("SELECT * FROM FileTable WHERE [Type] = 'dir'", sqlConn);
 
-			using (SqlDataReader dr = sqlComm.ExecuteReader())
+			using (SqlDataReader dataReader = cmd.ExecuteReader())
 			{
 				int id;
 				string pid;
 				string name;
 				List<string> dir;		// 临时变量
-				while (dr.Read())
+				while (dataReader.Read())
 				{
 					dir = new List<string>();
-					id = dr.GetInt32(1);
-					pid = dr.IsDBNull(2) ? "NULL" : dr.GetInt32(2).ToString();
-					name = dr.GetString(3);
+					id = dataReader.GetInt32(1);
+					pid = dataReader.IsDBNull(2) ? "NULL" : dataReader.GetInt32(2).ToString();
+					name = dataReader.GetString(3);
 
 					dir.Add(id.ToString());
 					dir.Add(pid);
@@ -131,27 +133,27 @@ namespace HuaweiSoftware.Folder.FolderDB
 		/// <param name="PID">文件所在的文件夹的ID</param>
 		/// <param name="connectionString">数据库的连接字符串</param>
 		/// <returns>返回的文件LIST</returns>
-		public static List<List<string>> GetFiles(string connectionString, int? PID = null)
+		public static List<List<string>> GetFiles(int? PID = null)
 		{
-			SqlConnection sqlConn = new SqlConnection(connectionString);
+			SqlConnection sqlConn = new SqlConnection(m_ConnectionString);
 
 			sqlConn.Open();
 
 			List<List<string>> files = new List<List<string>>();
 
-			string sqlCommandString = "SELECT * FROM FileTable";
+			string cmdString;		// sql命令字符串
 
 			if (PID.HasValue)
 			{
-				sqlCommandString = string.Format("SELECT * FROM FileTable WHERE [PID] = {0} AND [Type] LIKE '.%'", PID);
+				cmdString = string.Format("SELECT * FROM FileTable WHERE [PID] = {0} AND [Type] LIKE '.%'", PID);
 			}
 			else
 			{
-				sqlCommandString = "SELECT * FROM FileTable WHERE [PID] IS NULL AND [Type] LIKE '.%'";
+				cmdString = "SELECT * FROM FileTable WHERE [PID] IS NULL AND [Type] LIKE '.%'";
 			}
 
-			SqlCommand sqlComm = new SqlCommand(sqlCommandString, sqlConn);
-			using (SqlDataReader dr = sqlComm.ExecuteReader())
+			SqlCommand cmd = new SqlCommand(cmdString, sqlConn);
+			using (SqlDataReader dataReader = cmd.ExecuteReader())
 			{
 				int id;
 				string pid;
@@ -160,15 +162,15 @@ namespace HuaweiSoftware.Folder.FolderDB
 				string type;
 				DateTime createTime;
 				List<string> file;		// 临时变量
-				while (dr.Read())
+				while (dataReader.Read())
 				{
 					file = new List<string>();
-					id = dr.GetInt32(1);
-					pid = dr.IsDBNull(2) ? "NULL" : dr.GetInt32(2).ToString();
-					name = dr.GetString(3);
-					size = dr.GetInt64(4);
-					type = dr.GetString(5);
-					createTime = dr.GetDateTime(6);
+					id = dataReader.GetInt32(1);
+					pid = dataReader.IsDBNull(2) ? "NULL" : dataReader.GetInt32(2).ToString();
+					name = dataReader.GetString(3);
+					size = dataReader.GetInt64(4);
+					type = dataReader.GetString(5);
+					createTime = dataReader.GetDateTime(6);
 
 					file.Add(id.ToString());
 					file.Add(pid);

@@ -9,8 +9,6 @@ namespace HuaweiSoftware.Folder.FolderWCF
 	// 注意: 为了启动 WCF 测试客户端以测试此服务，请在解决方案资源管理器中选择 FolderWCF.svc 或 FolderWCF.svc.cs，然后开始调试。
 	public class FolderWCF : IFolderWCF
 	{
-		private string connectionString = WebConfigurationManager.AppSettings["ConnectionString"];
-
 		/// <summary>
 		/// 添加文件到数据库，插入之前先清空
 		/// </summary>
@@ -23,9 +21,8 @@ namespace HuaweiSoftware.Folder.FolderWCF
 		/// <returns>受影响的行数</returns>
 		public int SaveData(List<List<string>> folders)
 		{
-			return DBHelper.SaveData(folders, connectionString);
+			return DBHelper.SaveData(folders);
 		}
-
 
 		/// <summary>
 		/// 从数据库中读取文件夹
@@ -33,7 +30,7 @@ namespace HuaweiSoftware.Folder.FolderWCF
 		/// <returns>返回的文件夹LIST</returns>
 		public List<List<string>> GetAllFolders()
 		{
-			return DBHelper.GetAllFolders(connectionString);
+			return DBHelper.GetAllFolders();
 		}
 
 		/// <summary>
@@ -43,7 +40,7 @@ namespace HuaweiSoftware.Folder.FolderWCF
 		/// <returns>返回的文件LIST</returns>
 		public List<List<string>> GetFiles(int? PID = null)
 		{
-			return DBHelper.GetFiles(connectionString, PID);
+			return DBHelper.GetFiles(PID);
 		}
 	}
 }

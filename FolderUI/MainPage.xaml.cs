@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
@@ -9,19 +10,19 @@ namespace HuaweiSoftware.Folder.FolderUI
 {
 	public partial class MainPage : UserControl
 	{
-		ObservableCollection<string> extensions;		// 后缀名的集合
+		private ObservableCollection<string> m_Extensions;		// 后缀名的集合
 
-		DataBaseOperator dbOp;							// 操作数据库的对象
+		private FolderHelper m_FolderHelper;					// 操作数据库的对象
 
 		public MainPage()
 		{
 			InitializeComponent();
 
-			dbOp = new DataBaseOperator();
+			m_FolderHelper = new FolderHelper();
 
-			extensions = new ObservableCollection<string>();
-			ddlst_Extension.ItemsSource = extensions;
-			extensions.Add("ALL");
+			m_Extensions = new ObservableCollection<string>();
+			ddlst_Extension.ItemsSource = m_Extensions;
+			m_Extensions.Add("ALL");
 		}
 
 		private void btn_Save_Click(object sender, RoutedEventArgs e)
@@ -41,10 +42,10 @@ namespace HuaweiSoftware.Folder.FolderUI
 				DirectoryInfo dir = new DirectoryInfo(pathStr);
 
 				// 分4步保存到数据库
-				dbOp.ClearDBList();					// 先清空列表
-				dbOp.AddFileToList(dir, null);		// 本目录下的文件
-				dbOp.AddDirToList(dir, null);		// 本目录下的子目录(包括文件)
-				dbOp.SavaData();					// 保存到数据库
+				m_FolderHelper.ClearDBList();					// 先清空列表
+				m_FolderHelper.AddFileToList(dir, null);		// 本目录下的文件
+				m_FolderHelper.AddDirToList(dir, null);		// 本目录下的子目录(包括文件)
+				m_FolderHelper.SavaData();					// 保存到数据库
 			}
 			catch (Exception ex)
 			{
@@ -73,35 +74,35 @@ namespace HuaweiSoftware.Folder.FolderUI
 		}
 
 		/// <summary>
-		/// 设置那3个控件的enabled
+		/// 设置txt_Search、btn_Search、ddlst_Extension的enabled
 		/// </summary>
-		/// <param name="b"></param>
-		private void SetEnabled(bool b)
+		/// <param name="enable"></param>
+		private void SetEnabled(bool enable)
 		{
-			txt_Search.IsEnabled = b;
-			btn_Search.IsEnabled = b;
-			ddlst_Extension.IsEnabled = b;
+			txt_Search.IsEnabled = enable;
+			btn_Search.IsEnabled = enable;
+			ddlst_Extension.IsEnabled = enable;
 		}
 
 		private void ddlst_Extension_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			// 临时集合，默认显示“ALL”
-			ObservableCollection<File> files = dbOp.FileList;
+			List<List<string>> files = m_FolderHelper.FileList;
 
 			// 选择后缀
 			if (ddlst_Extension.SelectedIndex > 0)
 			{
-				files = new ObservableCollection<File>();
+				files = new List<List<string>>();
 
 				// 选择的后缀名
 				string extension = ddlst_Extension.SelectedValue.ToString();
 
 				// 筛选
-				foreach (var fileName in dbOp.FileList)
+				foreach (var file in m_FolderHelper.FileList)
 				{
-					if (fileName.Type == extension)
+					if (file[3] == extension)
 					{
-						files.Add(fileName);
+						files.Add(file);
 					}
 				}
 			}
@@ -115,11 +116,11 @@ namespace HuaweiSoftware.Folder.FolderUI
 
 			if (keyword != string.Empty)
 			{
-				ObservableCollection<File> files = new ObservableCollection<File>();
+				List<List<string>> files = new List<List<string>>();
 
-				foreach (var file in dbOp.FileList)
+				foreach (var file in m_FolderHelper.FileList)
 				{
-					if (file.Name.ToLower().Contains(keyword))
+					if (file[0].ToLower().Contains(keyword))
 					{
 						files.Add(file);
 					}
@@ -148,9 +149,9 @@ namespace HuaweiSoftware.Folder.FolderUI
 
 		private void btn_Load_Click(object sender, RoutedEventArgs e)
 		{
-			dbOp.GetAllFolders();		// 从目录中读取
+			m_FolderHelper.GetAllFolders();		// 从目录中读取
 
-			dbOp.onLoadDirFinish += new EventHandler(LoadDirFinish);	// 订阅事件
+			m_FolderHelper.onLoadDirFinish += new EventHandler(LoadDirFinish);	// 订阅事件
 		}
 
 		/// <summary>
@@ -160,7 +161,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 		/// <param name="e"></param>
 		private void LoadDirFinish(object sender, EventArgs e)
 		{
-			tree_Folder.ItemsSource = dbOp.DirTree;
+			tree_Folder.ItemsSource = m_FolderHelper.DirTree;
 			SetEnabled(true);
 		}
 
@@ -171,17 +172,18 @@ namespace HuaweiSoftware.Folder.FolderUI
 		/// <param name="e"></param>
 		private void LoadFileFinish(object sender, EventArgs e)
 		{
-			dg_File.ItemsSource = dbOp.FileList;
+			dg_File.ItemsSource = m_FolderHelper.FileList;
 
-			extensions.Clear();
-			extensions.Add("ALL");
+			m_Extensions.Clear();
+			m_Extensions.Add("ALL");
 
-			foreach (File file in dbOp.FileList)
+			foreach (List<string> file in m_FolderHelper.FileList)
 			{
-				string fileExt = file.Type;		// 后缀
-				if (!extensions.Contains(fileExt))
+				string fileExt = file[2];		// 后缀
+
+				if (!m_Extensions.Contains(fileExt))
 				{
-					extensions.Add(fileExt);
+					m_Extensions.Add(fileExt);
 				}
 			}
 		}
@@ -192,11 +194,11 @@ namespace HuaweiSoftware.Folder.FolderUI
 
 			if (nowNode != null)
 			{
-				dbOp.GetFiles((int) nowNode.Tag);
+				m_FolderHelper.GetFiles((int) nowNode.Tag);
 
 				// 订阅事件
-				dbOp.onLoadFileFinish -= new EventHandler(LoadFileFinish);
-				dbOp.onLoadFileFinish += new EventHandler(LoadFileFinish);
+				m_FolderHelper.onLoadFileFinish -= new EventHandler(LoadFileFinish);
+				m_FolderHelper.onLoadFileFinish += new EventHandler(LoadFileFinish);
 			}
 		}
 	}
