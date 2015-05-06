@@ -51,7 +51,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 
 			// 根目录的相关属性
 			root.Header = "Root";
-			root.Tag = new DirNameWithID(0, null, "Root");
+			root.Tag = 0;		// 保存树节点（文件夹）的ID
 		}
 
 		/// <summary>
@@ -213,11 +213,6 @@ namespace HuaweiSoftware.Folder.FolderUI
 			foreach (var treeRoot in treeRoots)
 			{
 				AddToDirTree(treeRoot, 1, root);
-
-				// 				TreeViewItem a = new TreeViewItem();
-				// 				root.Items.Add(a);
-				// 
-				// 				GetAllChildren(folders, treeRoot, 2, a);	// 
 			}
 
 			onLoadDirFinish(null, null);
@@ -245,8 +240,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 
 			TreeViewItem childNode = new TreeViewItem();
 			childNode.Header = name;
-			childNode.Tag = new DirNameWithID(id, pid, name, level);
-
+			childNode.Tag = id;		// id
 
 			if (parentNode != null)
 			{
@@ -275,11 +269,6 @@ namespace HuaweiSoftware.Folder.FolderUI
 				if (tempDir[1] == nowDir[0])			
 				{
 					AddToDirTree(tempDir, level, nowNode);
-// 
-// 					TreeViewItem a = new TreeViewItem();
-// 					nowNode.Items.Add(a);
-// 
-// 					GetAllChildren(dirs, nowDir, level + 1, a);
 				}
 			}
 		}

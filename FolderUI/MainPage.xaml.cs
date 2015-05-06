@@ -85,14 +85,18 @@ namespace HuaweiSoftware.Folder.FolderUI
 
 		private void ddlst_Extension_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			// 临时集合
-			ObservableCollection<File> files = new ObservableCollection<File>();
+			// 临时集合，默认显示“ALL”
+			ObservableCollection<File> files = dbOp.FileList;
 
 			// 选择后缀
 			if (ddlst_Extension.SelectedIndex > 0)
 			{
+				files = new ObservableCollection<File>();
+
+				// 选择的后缀名
 				string extension = ddlst_Extension.SelectedValue.ToString();
 
+				// 筛选
 				foreach (var fileName in dbOp.FileList)
 				{
 					if (fileName.Type == extension)
@@ -188,8 +192,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 
 			if (nowNode != null)
 			{
-				DirNameWithID dir = (DirNameWithID) nowNode.Tag;
-				dbOp.GetFiles(dir.Id);
+				dbOp.GetFiles((int) nowNode.Tag);
 
 				// 订阅事件
 				dbOp.onLoadFileFinish -= new EventHandler(LoadFileFinish);
