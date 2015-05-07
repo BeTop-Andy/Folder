@@ -61,6 +61,8 @@ namespace HuaweiSoftware.Folder.FolderDB
 				rowCount += cmd.ExecuteNonQuery();
 			}
 
+			sqlConn.Close();
+			
 			return rowCount;
 		}
 
@@ -124,6 +126,8 @@ namespace HuaweiSoftware.Folder.FolderDB
 				}
 			}
 
+			sqlConn.Close();
+
 			return folders;
 		}
 
@@ -182,6 +186,8 @@ namespace HuaweiSoftware.Folder.FolderDB
 					files.Add(file);
 				}
 			}
+
+			sqlConn.Close();
 
 			return files;
 		}

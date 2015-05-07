@@ -6,6 +6,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
+using C1.Silverlight.FlexGrid;
+
+using HuaweiSoftware.ZJNET.CommonSL;
+
 namespace HuaweiSoftware.Folder.FolderUI
 {
 	public partial class MainPage : UserControl
@@ -23,12 +27,18 @@ namespace HuaweiSoftware.Folder.FolderUI
 			m_Extensions = new ObservableCollection<string>();
 			ddlst_Extension.ItemsSource = m_Extensions;
 			m_Extensions.Add("ALL");
+
+			CellHandler cellHandler = new CellHandler();
+
+			fg_Files.CellFactory = cellHandler;
+
+			cellHandler.MyRowHeader = CreateRowHeader;
 		}
 
 		private void btn_Save_Click(object sender, RoutedEventArgs e)
 		{
 			tree_Folder.ItemsSource = null;
-			dg_File.ItemsSource = null;
+			fg_Files.Rows.Clear();
 
 			try
 			{
@@ -79,54 +89,65 @@ namespace HuaweiSoftware.Folder.FolderUI
 		/// <param name="enable"></param>
 		private void SetEnabled(bool enable)
 		{
-			txt_Search.IsEnabled = enable;
+			txt_Keyword.IsEnabled = enable;
 			btn_Search.IsEnabled = enable;
 			ddlst_Extension.IsEnabled = enable;
 		}
 
 		private void ddlst_Extension_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			// 临时集合，默认显示“ALL”
-			List<List<string>> files = m_FolderHelper.FileList;
-
-			// 选择后缀
-			if (ddlst_Extension.SelectedIndex > 0)
+			if (ddlst_Extension.SelectedIndex >= 0)
 			{
-				files = new List<List<string>>();
+				fg_Files.ItemsSource = null;
 
-				// 选择的后缀名
-				string extension = ddlst_Extension.SelectedValue.ToString();
+				// 临时集合,默认存放所有
+				List<List<string>> files = m_FolderHelper.FileList;
 
-				// 筛选
-				foreach (var file in m_FolderHelper.FileList)
+				// 选择后缀
+				if (ddlst_Extension.SelectedIndex > 0)
 				{
-					if (file[3] == extension)
+					files = new List<List<string>>();
+
+					// 选择的后缀名
+					string extension = ddlst_Extension.SelectedValue.ToString();
+
+					// 筛选
+					foreach (List<string> file in m_FolderHelper.FileList)
 					{
-						files.Add(file);
+						if (extension == file[2])	// 后缀
+						{
+							files.Add(file);
+						}
 					}
 				}
+
+				fg_Files.ItemsSource = files;
 			}
 
-			dg_File.ItemsSource = files;
 		}
 
 		private void btn_Search_Click(object sender, RoutedEventArgs e)
 		{
-			string keyword = txt_Search.Text.ToLower();		// 忽略大小写
+			List<List<string>> files = new List<List<string>>();
+
+			string keyword = txt_Keyword.Text.ToLower();		// 忽略大小写
 
 			if (keyword != string.Empty)
 			{
-				List<List<string>> files = new List<List<string>>();
+				fg_Files.ItemsSource = null;
 
-				foreach (var file in m_FolderHelper.FileList)
+				foreach (List<string> file in m_FolderHelper.FileList)
 				{
+					// file[0]为名称
 					if (file[0].ToLower().Contains(keyword))
 					{
 						files.Add(file);
 					}
 				}
 
-				dg_File.ItemsSource = files;
+				fg_Files.ItemsSource = files;
+
+				ddlst_Extension.SelectedIndex = -1;
 			}
 			else
 			{
@@ -172,20 +193,23 @@ namespace HuaweiSoftware.Folder.FolderUI
 		/// <param name="e"></param>
 		private void LoadFileFinish(object sender, EventArgs e)
 		{
-			dg_File.ItemsSource = m_FolderHelper.FileList;
-
 			m_Extensions.Clear();
 			m_Extensions.Add("ALL");
 
 			foreach (List<string> file in m_FolderHelper.FileList)
 			{
-				string fileExt = file[2];		// 后缀
+				string fileExt = file[2];			// 后缀
 
+				// 如果此后缀下拉框中不存在，就加进去
 				if (!m_Extensions.Contains(fileExt))
 				{
 					m_Extensions.Add(fileExt);
 				}
 			}
+
+			fg_Files.ItemsSource = m_FolderHelper.FileList;
+
+			//MessageBox.Show("读取完成");
 		}
 
 		private void tree_Folder_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -199,7 +223,28 @@ namespace HuaweiSoftware.Folder.FolderUI
 				// 订阅事件
 				m_FolderHelper.onLoadFileFinish -= new EventHandler(LoadFileFinish);
 				m_FolderHelper.onLoadFileFinish += new EventHandler(LoadFileFinish);
+
+				fg_Files.ItemsSource = null;
 			}
+		}
+
+		/// <summary>
+		/// 创建行序号方法
+		/// </summary>
+		/// <param name="flexGrid">界面FlexGrid实例</param>
+		/// <param name="border">单元格根控件</param>
+		/// <param name="cellRange">选择范围</param>
+		/// <returns>是否使用默认生成方法</returns>
+		private bool CreateRowHeader(C1FlexGrid flexGrid, Border border, CellRange cellRange)
+		{
+			string text = (cellRange.Row + 1).ToString();
+
+			TextBlock textBlock = new TextBlock();
+			textBlock.VerticalAlignment = VerticalAlignment.Center;
+			textBlock.Text = text;
+			border.Child = textBlock;
+
+			return false;
 		}
 	}
 }
