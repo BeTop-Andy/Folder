@@ -25,24 +25,24 @@ namespace HuaweiSoftware.Folder.FolderUI
 			m_FolderHelper = new FolderHelper();
 
 			m_Extensions = new ObservableCollection<string>();
-			ddlst_Extension.ItemsSource = m_Extensions;
+			ddlstExtension.ItemsSource = m_Extensions;
 			m_Extensions.Add("ALL");
 
 			CellHandler cellHandler = new CellHandler();
 
-			fg_Files.CellFactory = cellHandler;
+			fgFiles.CellFactory = cellHandler;
 
 			cellHandler.MyRowHeader = CreateRowHeader;
 		}
 
-		private void btn_Save_Click(object sender, RoutedEventArgs e)
+		private void btnSave_Click(object sender, RoutedEventArgs e)
 		{
-			tree_Folder.ItemsSource = null;
-			fg_Files.Rows.Clear();
+			treeFolder.ItemsSource = null;
+			fgFiles.Rows.Clear();
 
 			try
 			{
-				string pathStr = txt_Path.Text;
+				string pathStr = txtPath.Text;
 
 				if (!CheckPath(pathStr))
 				{
@@ -61,8 +61,8 @@ namespace HuaweiSoftware.Folder.FolderUI
 			{
 				MessageBox.Show(ex.Message);
 
-				txt_Path.Text = "";
-				txt_Path.Focus();
+				txtPath.Text = "";
+				txtPath.Focus();
 				SetEnabled(false);
 				return;
 			}
@@ -89,27 +89,27 @@ namespace HuaweiSoftware.Folder.FolderUI
 		/// <param name="enable"></param>
 		private void SetEnabled(bool enable)
 		{
-			txt_Keyword.IsEnabled = enable;
-			btn_Search.IsEnabled = enable;
-			ddlst_Extension.IsEnabled = enable;
+			txtKeyword.IsEnabled = enable;
+			btnSearch.IsEnabled = enable;
+			ddlstExtension.IsEnabled = enable;
 		}
 
-		private void ddlst_Extension_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		private void ddlstExtension_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (ddlst_Extension.SelectedIndex >= 0)
+			if (ddlstExtension.SelectedIndex >= 0)
 			{
-				fg_Files.ItemsSource = null;
+				fgFiles.ItemsSource = null;
 
 				// 临时集合,默认存放所有
 				List<List<string>> files = m_FolderHelper.FileList;
 
 				// 选择后缀
-				if (ddlst_Extension.SelectedIndex > 0)
+				if (ddlstExtension.SelectedIndex > 0)
 				{
 					files = new List<List<string>>();
 
 					// 选择的后缀名
-					string extension = ddlst_Extension.SelectedValue.ToString();
+					string extension = ddlstExtension.SelectedValue.ToString();
 
 					// 筛选
 					foreach (List<string> file in m_FolderHelper.FileList)
@@ -121,20 +121,20 @@ namespace HuaweiSoftware.Folder.FolderUI
 					}
 				}
 
-				fg_Files.ItemsSource = files;
+				fgFiles.ItemsSource = files;
 			}
 
 		}
 
-		private void btn_Search_Click(object sender, RoutedEventArgs e)
+		private void btnSearch_Click(object sender, RoutedEventArgs e)
 		{
 			List<List<string>> files = new List<List<string>>();
 
-			string keyword = txt_Keyword.Text.ToLower();		// 忽略大小写
+			string keyword = txtKeyword.Text.ToLower();		// 忽略大小写
 
 			if (keyword != string.Empty)
 			{
-				fg_Files.ItemsSource = null;
+				fgFiles.ItemsSource = null;
 
 				foreach (List<string> file in m_FolderHelper.FileList)
 				{
@@ -145,30 +145,30 @@ namespace HuaweiSoftware.Folder.FolderUI
 					}
 				}
 
-				fg_Files.ItemsSource = files;
+				fgFiles.ItemsSource = files;
 
-				ddlst_Extension.SelectedIndex = -1;
+				ddlstExtension.SelectedIndex = -1;
 			}
 			else
 			{
-				ddlst_Extension.SelectedIndex = 0;
+				ddlstExtension.SelectedIndex = 0;
 			}
 		}
 
-		private void txt_Search_KeyDown(object sender, KeyEventArgs e)
+		private void txtKeyword_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.Key == Key.Enter)
 			{
-				btn_Search_Click(null, null);
+				btnSearch_Click(null, null);
 			}
 		}
 
-		private void txt_Search_TextChanged(object sender, TextChangedEventArgs e)
+		private void txtKeyword_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			btn_Search_Click(null, null);
+			btnSearch_Click(null, null);
 		}
 
-		private void btn_Load_Click(object sender, RoutedEventArgs e)
+		private void btnLoad_Click(object sender, RoutedEventArgs e)
 		{
 			m_FolderHelper.GetAllFolders();		// 从目录中读取
 
@@ -182,7 +182,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 		/// <param name="e"></param>
 		private void LoadDirFinish(object sender, EventArgs e)
 		{
-			tree_Folder.ItemsSource = m_FolderHelper.DirTree;
+			treeFolder.ItemsSource = m_FolderHelper.DirTree;
 			SetEnabled(true);
 		}
 
@@ -207,14 +207,14 @@ namespace HuaweiSoftware.Folder.FolderUI
 				}
 			}
 
-			fg_Files.ItemsSource = m_FolderHelper.FileList;
+			fgFiles.ItemsSource = m_FolderHelper.FileList;
 
 			//MessageBox.Show("读取完成");
 		}
 
-		private void tree_Folder_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+		private void treeFolder_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
 		{
-			TreeViewItem nowNode = (TreeViewItem) tree_Folder.SelectedItem;
+			TreeViewItem nowNode = (TreeViewItem) treeFolder.SelectedItem;
 
 			if (nowNode != null)
 			{
@@ -224,7 +224,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 				m_FolderHelper.onLoadFileFinish -= new EventHandler(LoadFileFinish);
 				m_FolderHelper.onLoadFileFinish += new EventHandler(LoadFileFinish);
 
-				fg_Files.ItemsSource = null;
+				fgFiles.ItemsSource = null;
 			}
 		}
 

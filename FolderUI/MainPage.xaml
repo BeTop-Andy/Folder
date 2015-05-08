@@ -14,19 +14,19 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <TextBox x:Name="txt_Path" Height="23" Margin="75,10,170,0" VerticalAlignment="Top" Grid.ColumnSpan="3"/>
-        <Button x:Name="btn_Save" Content="保存" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="75" Height="23" Grid.Column="2" Click="btn_Save_Click"/>
-        <ComboBox x:Name="ddlst_Extension" Grid.Column="1" Margin="65,41,10,0" VerticalAlignment="Top" SelectionChanged="ddlst_Extension_SelectionChanged" Height="20" IsEnabled="False"/>
+        <TextBox x:Name="txtPath" Height="23" Margin="75,10,170,0" VerticalAlignment="Top" Grid.ColumnSpan="3"/>
+        <Button x:Name="btnSave" Content="保存" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="75" Height="23" Grid.Column="2" Click="btnSave_Click"/>
+        <ComboBox x:Name="ddlstExtension" Grid.Column="1" Margin="65,41,10,0" VerticalAlignment="Top" SelectionChanged="ddlstExtension_SelectionChanged" Height="20" IsEnabled="False"/>
         <sdk:Label Content="选择后缀" Grid.Column="1" HorizontalAlignment="Left" Margin="10,45,0,0" VerticalAlignment="Top" Width="55" Height="16"/>
-        <TextBox x:Name="txt_Keyword" Grid.Column="2" Height="23" Margin="10,38,90,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" KeyDown="txt_Search_KeyDown" TextChanged="txt_Search_TextChanged" IsEnabled="False"/>
-        <Button x:Name="btn_Search" Content="搜索" Grid.Column="2" Margin="0,39,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Height="22" Click="btn_Search_Click" IsEnabled="False"/>
-        <Button x:Name="btn_Load" Content="加载" Grid.Column="2" HorizontalAlignment="Right" Margin="0,10,90,0" VerticalAlignment="Top" Width="75" Click="btn_Load_Click"/>
+        <TextBox x:Name="txtKeyword" Grid.Column="2" Height="23" Margin="10,38,90,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" KeyDown="txtKeyword_KeyDown" TextChanged="txtKeyword_TextChanged" IsEnabled="False"/>
+        <Button x:Name="btnSearch" Content="搜索" Grid.Column="2" Margin="0,39,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Height="22" Click="btnSearch_Click" IsEnabled="False"/>
+        <Button x:Name="btnLoad" Content="加载" Grid.Column="2" HorizontalAlignment="Right" Margin="0,10,90,0" VerticalAlignment="Top" Width="75" Click="btnLoad_Click"/>
         <Border BorderThickness="1" HorizontalAlignment="Left" Height="22" Margin="10,10,0,0" VerticalAlignment="Top" Width="60">
             <sdk:Label Content="请输入路径"/>
         </Border>
-        <sdk:TreeView x:Name="tree_Folder" Margin="10,38,10,10" SelectedItemChanged="tree_Folder_SelectedItemChanged"/>
+        <sdk:TreeView x:Name="treeFolder" Margin="10,38,10,10" SelectedItemChanged="treeFolder_SelectedItemChanged"/>
         <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1" Margin="10,66,10,10" Grid.ColumnSpan="2">
-            <c1:C1FlexGrid x:Name="fg_Files" Margin="0" AutoGenerateColumns="False" AllowSorting="true" SelectionMode="Row" IsReadOnly="True">
+            <c1:C1FlexGrid x:Name="fgFiles" Margin="0" AutoGenerateColumns="False" AllowSorting="true" SelectionMode="Row" IsReadOnly="True">
                 <c1:C1FlexGrid.Columns>
                     <c1:Column Header="名称" Width="200" MinWidth="20" HeaderTextTrimming="WordEllipsis" TextTrimming="WordEllipsis" Binding="{Binding [0]}"/>
                     <c1:Column Header="创建日期" Width="150" MinWidth="20" TextTrimming="WordEllipsis" HeaderTextTrimming="WordEllipsis" Binding="{Binding [1]}"/>
