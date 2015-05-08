@@ -30,15 +30,16 @@ namespace HuaweiSoftware.Folder.FolderUI
 
 			CellHandler cellHandler = new CellHandler();
 
-			fgFiles.CellFactory = cellHandler;
+			flxFiles.CellFactory = cellHandler;
+			flxFolder.CellFactory = cellHandler;
 
 			cellHandler.MyRowHeader = CreateRowHeader;
 		}
 
 		private void btnSave_Click(object sender, RoutedEventArgs e)
 		{
-			treeFolder.ItemsSource = null;
-			fgFiles.Rows.Clear();
+			flxFolder.ItemsSource = null;
+			flxFiles.Rows.Clear();
 
 			try
 			{
@@ -63,8 +64,10 @@ namespace HuaweiSoftware.Folder.FolderUI
 
 				txtPath.Text = "";
 				txtPath.Focus();
+			}
+			finally
+			{
 				SetEnabled(false);
-				return;
 			}
 		}
 
@@ -98,7 +101,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 		{
 			if (ddlstExtension.SelectedIndex >= 0)
 			{
-				fgFiles.ItemsSource = null;
+				flxFiles.ItemsSource = null;
 
 				// 临时集合,默认存放所有
 				List<List<string>> files = m_FolderHelper.FileList;
@@ -121,7 +124,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 					}
 				}
 
-				fgFiles.ItemsSource = files;
+				flxFiles.ItemsSource = files;
 			}
 
 		}
@@ -134,7 +137,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 
 			if (keyword != string.Empty)
 			{
-				fgFiles.ItemsSource = null;
+				flxFiles.ItemsSource = null;
 
 				foreach (List<string> file in m_FolderHelper.FileList)
 				{
@@ -145,7 +148,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 					}
 				}
 
-				fgFiles.ItemsSource = files;
+				flxFiles.ItemsSource = files;
 
 				ddlstExtension.SelectedIndex = -1;
 			}
@@ -170,20 +173,75 @@ namespace HuaweiSoftware.Folder.FolderUI
 
 		private void btnLoad_Click(object sender, RoutedEventArgs e)
 		{
+			// 清空列表
+			flxFolder.ItemsSource = null;
+			flxFiles.ItemsSource = null;
+
 			m_FolderHelper.GetAllFolders();		// 从目录中读取
 
 			m_FolderHelper.onLoadDirFinish += new EventHandler(LoadDirFinish);	// 订阅事件
 		}
 
 		/// <summary>
-		/// 读取完成，绑定数据源
+		/// 读取完成，构造树，填充flexgrid
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void LoadDirFinish(object sender, EventArgs e)
 		{
-			treeFolder.ItemsSource = m_FolderHelper.DirTree;
+			//fgFolder.ItemsSource = m_FolderHelper.DirList;
+
+			GroupRow newRow = new GroupRow();
+			flxFolder.Rows.Add(newRow);
+			// 显示的是名字
+			newRow[0] = m_FolderHelper.DirList[0][2];
+			// 后台存的是ID
+			newRow.Tag = Convert.ToInt32(m_FolderHelper.DirList[0][0]);
+			newRow.Level = 0;
+
+			// 用于存放PID为NULL的目录，相当于几棵目录树的根节点，所以叫treeRoots
+			List<List<string>> treeRoots = new List<List<string>>();
+
+			// 找PID为NULL的目录
+			foreach (var dir in m_FolderHelper.DirList)
+			{
+				if (dir[1] == "NULL")
+				{
+					treeRoots.Add(dir);
+				}
+			}
+
+			// 先序遍历各棵目录树
+			foreach (var treeRoot in treeRoots)
+			{
+				BindTreeNode(treeRoot, 1);
+			}
+
 			SetEnabled(true);
+		}
+
+		/// <summary>
+		/// 构建树
+		/// </summary>
+		/// <param name="dir">目录相关信息</param>
+		/// <param name="level">深度</param>
+		private void BindTreeNode(List<string> dir, int level)
+		{
+			GroupRow newRow = new GroupRow();
+			flxFolder.Rows.Add(newRow);
+			newRow[0] = dir[2];						// 名称
+			newRow.Tag = Convert.ToInt32(dir[0]);	// ID
+			newRow.Level = level;
+
+			foreach (List<string> tempDir in m_FolderHelper.DirList)
+			{
+				// 找“孩子”
+				// tempDir的PID等于dir的ID
+				if (tempDir[1] == dir[0])
+				{
+					BindTreeNode(tempDir, level + 1);
+				}
+			}
 		}
 
 		/// <summary>
@@ -207,25 +265,7 @@ namespace HuaweiSoftware.Folder.FolderUI
 				}
 			}
 
-			fgFiles.ItemsSource = m_FolderHelper.FileList;
-
-			//MessageBox.Show("读取完成");
-		}
-
-		private void treeFolder_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-		{
-			TreeViewItem nowNode = (TreeViewItem) treeFolder.SelectedItem;
-
-			if (nowNode != null)
-			{
-				m_FolderHelper.GetFiles((int) nowNode.Tag);
-
-				// 订阅事件
-				m_FolderHelper.onLoadFileFinish -= new EventHandler(LoadFileFinish);
-				m_FolderHelper.onLoadFileFinish += new EventHandler(LoadFileFinish);
-
-				fgFiles.ItemsSource = null;
-			}
+			flxFiles.ItemsSource = m_FolderHelper.FileList;
 		}
 
 		/// <summary>
@@ -245,6 +285,24 @@ namespace HuaweiSoftware.Folder.FolderUI
 			border.Child = textBlock;
 
 			return false;
+		}
+
+		private void fgFolder_SelectionChanged(object sender, CellRangeEventArgs e)
+		{
+			int index = e.Row;		// 选择的行的index
+
+			if (index >= 0)
+			{
+				int id = (int) flxFolder.Rows[index].Tag;
+
+				m_FolderHelper.GetFiles(id);
+
+				// 订阅事件
+				m_FolderHelper.onLoadFileFinish -= new EventHandler(LoadFileFinish);
+				m_FolderHelper.onLoadFileFinish += new EventHandler(LoadFileFinish);
+
+				flxFiles.ItemsSource = null;
+			}
 		}
 	}
 }
