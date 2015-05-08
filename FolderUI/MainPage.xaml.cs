@@ -189,8 +189,6 @@ namespace HuaweiSoftware.Folder.FolderUI
 		/// <param name="e"></param>
 		private void LoadDirFinish(object sender, EventArgs e)
 		{
-			//fgFolder.ItemsSource = m_FolderHelper.DirList;
-
 			GroupRow newRow = new GroupRow();
 			flxFolder.Rows.Add(newRow);
 			// 显示的是名字
@@ -216,8 +214,6 @@ namespace HuaweiSoftware.Folder.FolderUI
 			{
 				BindTreeNode(treeRoot, 1);
 			}
-
-			SetEnabled(true);
 		}
 
 		/// <summary>
@@ -266,6 +262,8 @@ namespace HuaweiSoftware.Folder.FolderUI
 			}
 
 			flxFiles.ItemsSource = m_FolderHelper.FileList;
+
+			SetEnabled(true);
 		}
 
 		/// <summary>
@@ -293,6 +291,8 @@ namespace HuaweiSoftware.Folder.FolderUI
 
 			if (index >= 0)
 			{
+				SetEnabled(false);
+
 				int id = (int) flxFolder.Rows[index].Tag;
 
 				m_FolderHelper.GetFiles(id);

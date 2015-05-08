@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     d:DesignHeight="600" d:DesignWidth="800" BorderBrush="Black">
 
-    <Grid x:Name="LayoutRoot" Background="White">
+    <Grid x:Name="LayoutRoot" Background="#FFD1DCE8">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*"/>
             <ColumnDefinition/>
@@ -22,34 +22,37 @@
         <c1:C1DockControl Margin="0,38,10,10" Background="Transparent" Grid.ColumnSpan="2">
             <c1:C1DockTabControl Dock="Left" ShowHeader="True" Background="Silver" CanUserHide="False" ShowMenu="False" ShowSingleTab="False" Margin="0,0,0,0">
                 <c1:C1DockTabItem Header="文件夹">
-                   <!-- <sdk:TreeView x:Name="treeFolder" SelectedItemChanged="treeFolder_SelectedItemChanged" BorderBrush="Black"/>
-                    -->
-                    <c1:C1FlexGrid x:Name="flxFolder" AutoGenerateColumns="False" HorizontalContentAlignment="Left" SelectionMode="Row" SelectionChanged="fgFolder_SelectionChanged">
+                    <c1:C1FlexGrid x:Name="flxFolder" AutoGenerateColumns="False" HorizontalContentAlignment="Left" SelectionMode="Row" SelectionChanged="fgFolder_SelectionChanged" GroupRowBackground="{x:Null}"  RowBackground="{x:Null}" ShowOutlineBar="True" MinColumnWidth="50" SelectionBackground="#FFD4EAF1" GridLinesBrush="#FFA3AEB9">
                         <c1:C1FlexGrid.Columns>
                             <c1:Column Header="名称" Binding="{Binding Path=[2]}">
-                                
                             </c1:Column>
                         </c1:C1FlexGrid.Columns>
                     </c1:C1FlexGrid>
-
                 </c1:C1DockTabItem>
             </c1:C1DockTabControl>
             <c1:C1DockTabControl ShowSingleTab="False" ShowMenu="False" CanUserHide="False" CanUserSlide="False" HorizontalFill="True">
                 <c1:C1DockTabItem Header="文件">
                     <Grid>
-                        <sdk:Label Content="选择后缀" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" Height="16" Margin="10,17,0,0"/>
-                        <ComboBox x:Name="ddlstExtension" Margin="65,13,0,0" VerticalAlignment="Top" SelectionChanged="ddlstExtension_SelectionChanged" Height="20" IsEnabled="False" HorizontalAlignment="Left" Width="100"/>
-                        <TextBox x:Name="txtKeyword" Height="23" Margin="170,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" KeyDown="txtKeyword_KeyDown" TextChanged="txtKeyword_TextChanged" IsEnabled="False" HorizontalAlignment="Left" Width="100"/>
-                        <Button x:Name="btnSearch" Content="搜索" Margin="275,11,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="75" Height="22" Click="btnSearch_Click" IsEnabled="False"/>
-                        <c1:C1FlexGrid x:Name="flxFiles" Margin="10,39,10,0" AutoGenerateColumns="False" AllowSorting="true" SelectionMode="Row" IsReadOnly="True" BorderBrush="Black">
-                            <c1:C1FlexGrid.Columns>
-                                <c1:Column Header="名称" Width="200" MinWidth="20" HeaderTextTrimming="WordEllipsis" TextTrimming="WordEllipsis" Binding="{Binding [0]}"/>
-                                <c1:Column Header="创建日期" Width="150" MinWidth="20" TextTrimming="WordEllipsis" HeaderTextTrimming="WordEllipsis" Binding="{Binding [1]}"/>
-                                <c1:Column Header="类型" Width="50" MinWidth="20" TextTrimming="WordEllipsis" HeaderTextTrimming="WordEllipsis" Binding="{Binding [2]}"/>
-                                <c1:Column Header="大小" Width="100" MinWidth="20" HorizontalAlignment="right" TextTrimming="WordEllipsis" HeaderTextTrimming="WordEllipsis" Binding="{Binding [3]}"/>
-                            </c1:C1FlexGrid.Columns>
-                        </c1:C1FlexGrid>
-
+                        <Border BorderBrush="#FFA3AEB9" BorderThickness="1" VerticalAlignment="Top" Height="27" CornerRadius="5">
+                            <StackPanel Height="23" Orientation="Horizontal">
+                                <Border Margin="5,0">
+                                    <sdk:Label Content="选择后缀" Width="50" Height="16"/>
+                                </Border>
+                                <ComboBox x:Name="ddlstExtension" VerticalAlignment="Top" SelectionChanged="ddlstExtension_SelectionChanged" Height="23" IsEnabled="False" HorizontalAlignment="Left" Width="100" Margin="5,0"/>
+                                <TextBox x:Name="txtKeyword" TextWrapping="Wrap" Text="" KeyDown="txtKeyword_KeyDown" TextChanged="txtKeyword_TextChanged" IsEnabled="False" HorizontalAlignment="Left" Width="100" Margin="5,0"/>
+                                <Button x:Name="btnSearch" Content="搜索" HorizontalAlignment="Left" Width="75" Click="btnSearch_Click" IsEnabled="False" Margin="5,0"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Margin="0,27,0,0" BorderBrush="#FFA3AEB9" BorderThickness="1" >
+                            <c1:C1FlexGrid x:Name="flxFiles" AutoGenerateColumns="False" AllowSorting="true" SelectionMode="Row" IsReadOnly="True" BorderBrush="Black" GroupRowBackground="{x:Null}" RowBackground="{x:Null}" SelectionBackground="#FFD4EAF1" MinColumnWidth="50" GridLinesBrush="#FFA3AEB9">
+                                <c1:C1FlexGrid.Columns>
+                                    <c1:Column Header="名称" Width="200" HeaderTextTrimming="WordEllipsis" TextTrimming="WordEllipsis" Binding="{Binding [0]}"/>
+                                    <c1:Column Header="创建日期" Width="125" TextTrimming="WordEllipsis" HeaderTextTrimming="WordEllipsis" Binding="{Binding [1]}"/>
+                                    <c1:Column Header="类型" Width="50" TextTrimming="WordEllipsis" HeaderTextTrimming="WordEllipsis" Binding="{Binding [2]}"/>
+                                    <c1:Column Header="大小" Width="100" HorizontalAlignment="right" TextTrimming="WordEllipsis" HeaderTextTrimming="WordEllipsis" Binding="{Binding [3]}"/>
+                                </c1:C1FlexGrid.Columns>
+                            </c1:C1FlexGrid>
+                        </Border>
                     </Grid>
                 </c1:C1DockTabItem>
             </c1:C1DockTabControl>
